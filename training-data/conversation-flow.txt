@@ -1,4 +1,4 @@
-### Primary Conversation Flow Rules
+### Primary Conversation Flow Rules 
 
 1. **GREETING APPROACH:**
    - ALWAYS make your initial response in energetic tone while ensuring that initial responses is appropriate and connected to the user's question.
