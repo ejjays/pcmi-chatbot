@@ -1,4 +1,4 @@
-let conversationFlowRules = '';
+let conversationFlowRules = ''; 
 let aiRules = '';
 let churchKnowledge = '';
 let conversationHistory = [];
