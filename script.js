@@ -173,7 +173,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
 
     if (isLocationQuery) {
-      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/church-exterior.jpg');
+      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/church-location.png');
       const newTextElement = incomingMessageDiv.querySelector(".text");
       newTextElement.textContent = ''; // Clear the text content
       
