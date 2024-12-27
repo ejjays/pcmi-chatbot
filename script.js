@@ -102,7 +102,7 @@ const createMessageWithImage = (text, imagePath) => {
     </div>
     <div class="message-container">
       ${imagePath ? `<img class="response-image" src="${imagePath}" alt="Church image">` : ''}
-      <p class="text"></p>
+      <p class="text">${text}</p>
     </div>
   </div>
   <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>`;
@@ -113,18 +113,10 @@ const createMessageWithImage = (text, imagePath) => {
 const generateAPIResponse = async (incomingMessageDiv) => {
   const textElement = incomingMessageDiv.querySelector(".text");
     
-    
-    // Check if message contains location-related keywords
-const isLocationQuery = userMessage.toLowerCase().includes('location') || 
-                       userMessage.toLowerCase().includes('where') ||
-                       userMessage.toLowerCase().includes('church');
-
-// If it's a location query, use template with image
-if (isLocationQuery) {
-  incomingMessageDiv.innerHTML = createMessageWithImage('', '/images/church-exterior.jpg');
-}
-    
-    
+  // Check if message contains location-related keywords
+  const isLocationQuery = userMessage.toLowerCase().includes('location') || 
+                         userMessage.toLowerCase().includes('where') ||
+                         userMessage.toLowerCase().includes('church');
   
   // Create the conversation payload
   const messages = conversationHistory.map(msg => ({
@@ -179,6 +171,12 @@ if (isLocationQuery) {
     
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
 
+    // Handle location queries with image
+    if (isLocationQuery) {
+      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/church-exterior.jpg');
+      textElement = incomingMessageDiv.querySelector(".text"); // Reassign textElement after innerHTML change
+    }
+
     showTypingEffect(apiResponse, textElement, incomingMessageDiv);
   } catch (error) {
     isResponseGenerating = false;
@@ -193,7 +191,6 @@ if (isLocationQuery) {
     }
   }
 }
-
 // Show a loading animation while waiting for the API response
 const showLoadingAnimation = () => {
   const html = `<div class="message-content">
