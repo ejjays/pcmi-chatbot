@@ -113,7 +113,7 @@ const createMessageWithImage = (text, imagePath) => {
 const generateAPIResponse = async (incomingMessageDiv) => {
   const textElement = incomingMessageDiv.querySelector(".text");
     
-  // Check if message contains location-related keywords or youth fellowship keywords
+  // Check if message contains location-related keywords or other service keywords
   const isLocationQuery = userMessage.toLowerCase().includes('location') || 
                          userMessage.toLowerCase().includes('where') ||
                          userMessage.toLowerCase().includes('church');
@@ -121,6 +121,18 @@ const generateAPIResponse = async (incomingMessageDiv) => {
   const isYouthQuery = userMessage.toLowerCase().includes('youth') || 
                       userMessage.toLowerCase().includes('fellowship') ||
                       userMessage.toLowerCase().includes('young people');
+
+  const isCellGroupQuery = userMessage.toLowerCase().includes('cell') || 
+                          userMessage.toLowerCase().includes('kamustahan') ||
+                          userMessage.toLowerCase().includes('online cellgroup');
+
+  const isSundayServiceQuery = userMessage.toLowerCase().includes('sunday') || 
+                              userMessage.toLowerCase().includes('worship') ||
+                              userMessage.toLowerCase().includes('service time');
+                              
+  const isDiscipleshipQuery = userMessage.toLowerCase().includes('discipleship') || 
+                             userMessage.toLowerCase().includes('disciple') ||
+                             userMessage.toLowerCase().includes('life class');                          
   
   // Create the conversation payload
   const messages = conversationHistory.map(msg => ({
@@ -178,19 +190,31 @@ const generateAPIResponse = async (incomingMessageDiv) => {
       incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/church-location.png');
       const newTextElement = incomingMessageDiv.querySelector(".text");
       newTextElement.textContent = ''; 
-      
-      setTimeout(() => {
-        showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-      }, 1000);
+      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
     } 
     else if (isYouthQuery) {
       incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/youth-fellowship.jpg');
       const newTextElement = incomingMessageDiv.querySelector(".text");
       newTextElement.textContent = ''; 
-      
-      setTimeout(() => {
-        showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-      }, 1000);
+      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
+    }
+    else if (isCellGroupQuery) {
+      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/cellgroup.jpg');
+      const newTextElement = incomingMessageDiv.querySelector(".text");
+      newTextElement.textContent = ''; 
+      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
+    }
+    else if (isSundayServiceQuery) {
+      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/sunday-service.jpg');
+      const newTextElement = incomingMessageDiv.querySelector(".text");
+      newTextElement.textContent = ''; 
+      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
+    }
+    else if (isDiscipleshipQuery) {
+      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/discipleship.jpg');
+      const newTextElement = incomingMessageDiv.querySelector(".text");
+      newTextElement.textContent = ''; 
+      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
     }
     else {
       textElement.textContent = '';
@@ -210,6 +234,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     }
   }
 }
+
 // Show a loading animation while waiting for the API response
 const showLoadingAnimation = () => {
   const html = `<div class="message-content">
