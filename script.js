@@ -113,12 +113,14 @@ const createMessageWithImage = (text, imagePath) => {
 const generateAPIResponse = async (incomingMessageDiv) => {
   const textElement = incomingMessageDiv.querySelector(".text");
     
-  // Check if message contains location-related keywords
+  // Check if message contains location-related keywords or youth fellowship keywords
   const isLocationQuery = userMessage.toLowerCase().includes('location') || 
                          userMessage.toLowerCase().includes('where') ||
                          userMessage.toLowerCase().includes('church');
-  
-  
+
+  const isYouthQuery = userMessage.toLowerCase().includes('youth') || 
+                      userMessage.toLowerCase().includes('fellowship') ||
+                      userMessage.toLowerCase().includes('young people');
   
   // Create the conversation payload
   const messages = conversationHistory.map(msg => ({
@@ -175,13 +177,22 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     if (isLocationQuery) {
       incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/church-location.png');
       const newTextElement = incomingMessageDiv.querySelector(".text");
-      newTextElement.textContent = ''; // Clear the text content
+      newTextElement.textContent = ''; 
       
-      // Add delay before starting the typing effect
       setTimeout(() => {
         showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-      }, 1); // 0.5 second delay
-    } else {
+      }, 1000);
+    } 
+    else if (isYouthQuery) {
+      incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/services/youth-fellowship.jpg');
+      const newTextElement = incomingMessageDiv.querySelector(".text");
+      newTextElement.textContent = ''; 
+      
+      setTimeout(() => {
+        showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
+      }, 1000);
+    }
+    else {
       textElement.textContent = '';
       showTypingEffect(apiResponse, textElement, incomingMessageDiv);
     }
