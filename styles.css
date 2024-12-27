@@ -537,3 +537,22 @@ body.hide-header .header {
   flex-direction: column;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.response-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    opacity: 0; /* Start hidden */
+    animation: fadeIn 0.5s ease-in forwards; /* Smooth fade in */
+}
+

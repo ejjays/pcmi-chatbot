@@ -118,6 +118,8 @@ const generateAPIResponse = async (incomingMessageDiv) => {
                          userMessage.toLowerCase().includes('where') ||
                          userMessage.toLowerCase().includes('church');
   
+  
+  
   // Create the conversation payload
   const messages = conversationHistory.map(msg => ({
     role: msg.role,
@@ -163,7 +165,6 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     const apiResponse = data.candidates[0].content.parts[0].text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
-    // Add AI response to conversation history
     conversationHistory.push({
       role: "assistant",
       content: apiResponse
@@ -171,13 +172,20 @@ const generateAPIResponse = async (incomingMessageDiv) => {
     
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
 
-    // Handle location queries with image
     if (isLocationQuery) {
       incomingMessageDiv.innerHTML = createMessageWithImage(apiResponse, '/images/church-exterior.jpg');
-      textElement = incomingMessageDiv.querySelector(".text"); // Reassign textElement after innerHTML change
+      const newTextElement = incomingMessageDiv.querySelector(".text");
+      newTextElement.textContent = ''; // Clear the text content
+      
+      // Add delay before starting the typing effect
+      setTimeout(() => {
+        showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
+      }, 1); // 0.5 second delay
+    } else {
+      textElement.textContent = '';
+      showTypingEffect(apiResponse, textElement, incomingMessageDiv);
     }
 
-    showTypingEffect(apiResponse, textElement, incomingMessageDiv);
   } catch (error) {
     isResponseGenerating = false;
     textElement.innerText = error.message;
