@@ -92,9 +92,39 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     }, 75);
 }
 
+
+
+const createMessageWithImage = (text, imagePath) => {
+  return `<div class="message-content">
+    <div class="header-row">
+      <img class="avatar" src="images/gemini.svg" alt="Gemini avatar">
+      <div class="answer-indicator">Answer</div>
+    </div>
+    <div class="message-container">
+      ${imagePath ? `<img class="response-image" src="${imagePath}" alt="Church image">` : ''}
+      <p class="text"></p>
+    </div>
+  </div>
+  <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>`;
+};
+
+
 // Fetch response from the API based on user message
 const generateAPIResponse = async (incomingMessageDiv) => {
   const textElement = incomingMessageDiv.querySelector(".text");
+    
+    
+    // Check if message contains location-related keywords
+const isLocationQuery = userMessage.toLowerCase().includes('location') || 
+                       userMessage.toLowerCase().includes('where') ||
+                       userMessage.toLowerCase().includes('church');
+
+// If it's a location query, use template with image
+if (isLocationQuery) {
+  incomingMessageDiv.innerHTML = createMessageWithImage('', '/images/church-exterior.jpg');
+}
+    
+    
   
   // Create the conversation payload
   const messages = conversationHistory.map(msg => ({
@@ -231,12 +261,30 @@ const handleOutgoingChat = () => {
   chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to the bottom
   setTimeout(showLoadingAnimation, 500); // Show loading animation after a delay
 }
+const waveContainer = document.querySelector(".theme-wave-container");
+const waveElement = document.querySelector(".theme-wave");
 
-// Toggle between light and dark themes
 toggleThemeButton.addEventListener("click", () => {
-  const isLightMode = document.body.classList.toggle("light_mode");
-  localStorage.setItem("themeColor", isLightMode ? "light_mode" : "dark_mode");
-  toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
+  const isLightMode = document.body.classList.contains("light_mode");
+  
+  // Set initial wave color to opposite of current theme
+  waveElement.style.background = isLightMode ? 
+    "var(--primary-color)" : "#FFF";
+  
+  // Apply animation based on direction
+  waveElement.style.animation = `${isLightMode ? 'wave-to-dark' : 'wave-to-light'} 1s ease-out forwards`;
+  
+  // Toggle theme after slight delay
+  setTimeout(() => {
+    document.body.classList.toggle("light_mode");
+    localStorage.setItem("themeColor", isLightMode ? "dark_mode" : "light_mode");
+    toggleThemeButton.innerText = isLightMode ? "light_mode" : "dark_mode";
+    
+    // Reset animation
+    setTimeout(() => {
+      waveElement.style.animation = 'none';
+    }, 1000);
+  }, 300);
 });
 
 // Delete all chats from local storage when button is clicked

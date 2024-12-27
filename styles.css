@@ -21,6 +21,49 @@
   transition: all 0.5s ease;
 }
 
+
+/* Add after your existing root variables */
+.theme-wave-container {
+  position: fixed;
+  pointer-events: none;
+  inset: 0;
+  z-index: -1;
+}
+
+.theme-wave {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: var(--primary-color);
+  width: 200vmax;
+  height: 200vmax;
+}
+
+@keyframes wave-to-dark {
+  from {
+    transform: translate(-100%, 100%) scale(0);
+  }
+  to {
+    transform: translate(50%, -50%) scale(1);
+  }
+}
+
+@keyframes wave-to-light {
+  from {
+    transform: translate(150%, -100%) scale(0);
+  }
+  to {
+    transform: translate(-50%, 50%) scale(1);
+  }
+}
+
+
+
+
+
+
+
+
 .light_mode {
   /* Light mode colors */
   --text-color: #222;
@@ -477,5 +520,20 @@ body.hide-header .header {
 
 .chat-list .message {
   position: relative;
+}
+
+
+
+.response-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
 }
 
