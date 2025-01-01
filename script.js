@@ -41,7 +41,7 @@ const deleteChatButton = document.querySelector("#delete-chat-button");
 
 // State variables
 let userMessage = null;
-let isResponseGenerating = false;
+let isResponseGenerating = false; 
 
 // API configuration
 const API_KEY = "AIzaSyC0N559LhkMH1GqrvF1Pg7cpkMmaHMZgZg"; // API key 
