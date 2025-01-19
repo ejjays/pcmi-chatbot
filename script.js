@@ -89,9 +89,13 @@ const createMessageElement = (content, ...classes) => {
 
 const displaySuggestions = async (messageDiv, aiResponse) => {
     // Check if suggestions are hidden
-    if (localStorage.getItem('hideFollowUps') === 'true') {
-        return; // Don't display suggestions if they're hidden
-    }
+    if (areFollowUpsHidden) {
+        const menuIcon = messageDiv.querySelector('.menu-icon');
+        if (menuIcon) {
+            menuIcon.style.display = 'inline-flex';
+        }
+        return;
+     }   
     
     if (isResponseGenerating) return;
 
@@ -589,8 +593,10 @@ const toggleFollowUps = (menuButton) => {
     const messageDiv = menuButton.closest('.message');
     const suggestionsContainer = messageDiv.querySelector('.suggestions-container');
     
-    if (!suggestionsContainer) {
+    if (!suggestionsContainer && areFollowUpsHidden) {
         // If suggestions are hidden, show them
+        areFollowUpsHidden = false;
+        localStorage.setItem('hideFollowUps', 'false');
         displaySuggestions(messageDiv, messageDiv.querySelector('.text').textContent);
         menuButton.style.display = 'none';
     }
@@ -613,6 +619,11 @@ const hideFollowUps = (suggestionsContainer) => {
         if (menuButton) {
             menuButton.style.display = 'inline-flex';
         }
+        
+        // Show menu icons for all messages
+        document.querySelectorAll('.menu-icon').forEach(icon => {
+            icon.style.display = 'inline-flex';
+        });
     }, 400);
 };
 
