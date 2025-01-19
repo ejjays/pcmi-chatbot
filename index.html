@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCMI - ChatBot</title>
+  <link rel="shortcut icon" href="images/pcmi-logo.png"
+  <!-- Linking Google Fonts For Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <!-- Header Greetings -->
+    <h1 class="title">Hello, church!</h1>
+    <p class="subtitle">How can I help you today?</p>
+
+    <!-- Suggestion list -->
+    <ul class="suggestion-list">
+<li class="suggestion">
+  <h4 class="text">What time does Sunday service starts?</h4>
+  <img class="icon" src="images/suggestions/clock.gif" alt="Schedule icon">
+</li>
+  <li class="suggestion">
+    <h4 class="text">Where is our church located?</h4>
+    <img class="icon" src="images/suggestions/location.gif" alt="Schedule icon">
+  </li>
+  <li class="suggestion">
+    <h4 class="text">What is Intentional Discipleship?</h4>
+    <img class="icon" src="images/suggestions/connect.gif" alt="Schedule icon">
+  </li>
+  <li class="suggestion">
+    <h4 class="text">When is the next Youth Fellowship?</h4>
+    <img class="icon" src="images/suggestions/fellowship.gif" alt="Schedule icon">
+  </li>
+</ul>
+  </header>
+
+  <!-- Chat List / Container -->
+  <div class="chat-list"></div>
+
+  <!-- Typing Area -->
+  <div class="typing-area">
+    <form action="#" class="typing-form">
+      <div class="input-wrapper">
+        <input type="text" placeholder="Type question here..." class="typing-input" required />
+        <button id="send-message-button" class="icon material-symbols-rounded">send</button>
+      </div>
+      <div class="action-buttons">
+        <span id="theme-toggle-button" class="icon material-symbols-rounded">light_mode</span>
+        <span id="delete-chat-button" class="icon material-symbols-rounded">delete</span>
+      </div>
+    </form>
+    <p class="footer-text">
+      Pag-ibig Christian Ministries - Infanta Quezon
+    </p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
