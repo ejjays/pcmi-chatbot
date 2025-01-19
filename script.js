@@ -4,7 +4,7 @@ let churchKnowledge = '';
 let conversationHistory = [];
 let linkFormatRules = '';
 let userIsScrolling = false;
-let areFollowUpsHidden = localStorage.getItem('hideFollowUps') === 'true';
+let areFollowUpsHidden = false; 
 
 const isInappropriateContent = (message) => {
     const inappropriateWords = [
@@ -88,19 +88,10 @@ const createMessageElement = (content, ...classes) => {
 }
 
 const displaySuggestions = async (messageDiv, aiResponse) => {
-    // Check if suggestions are hidden
-    if (areFollowUpsHidden) {
-        const menuIcon = messageDiv.querySelector('.menu-icon');
-        if (menuIcon) {
-            menuIcon.style.display = 'inline-flex';
-        }
-        return;
-     }   
     
     if (isResponseGenerating) return;
 
-    // Remove any existing suggestions first
-    const existingSuggestions = messageDiv.querySelector(".suggestions-container");
+     const existingSuggestions = messageDiv.querySelector(".suggestions-container");
     if (existingSuggestions) {
         existingSuggestions.remove();
     }
@@ -284,7 +275,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: ${areFollowUpsHidden ? 'inline-flex' : 'none'};">menu</span>
+        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
       </div>
     </div>
   </div>`;
@@ -591,14 +582,13 @@ const copyMessage = (copyButton) => {
 
 const toggleFollowUps = (menuButton) => {
     const messageDiv = menuButton.closest('.message');
-    const suggestionsContainer = messageDiv.querySelector('.suggestions-container');
     
-    if (!suggestionsContainer && areFollowUpsHidden) {
+    if (areFollowUpsHidden) {
         // If suggestions are hidden, show them
         areFollowUpsHidden = false;
         localStorage.setItem('hideFollowUps', 'false');
         displaySuggestions(messageDiv, messageDiv.querySelector('.text').textContent);
-        menuButton.style.display = 'none';
+        menuButton.style.display = 'none'; 
     }
 };
 
@@ -615,15 +605,10 @@ const hideFollowUps = (suggestionsContainer) => {
         localStorage.setItem('hideFollowUps', 'true');
         areFollowUpsHidden = true;
         
-        // Show the menu icon
+        // Show the menu icon ONLY after hiding follow-ups
         if (menuButton) {
             menuButton.style.display = 'inline-flex';
         }
-        
-        // Show menu icons for all messages
-        document.querySelectorAll('.menu-icon').forEach(icon => {
-            icon.style.display = 'inline-flex';
-        });
     }, 400);
 };
 
