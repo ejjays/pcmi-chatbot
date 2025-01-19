@@ -4,6 +4,7 @@ let churchKnowledge = '';
 let conversationHistory = [];
 let linkFormatRules = '';
 let userIsScrolling = false;
+let areFollowUpsHidden = localStorage.getItem('hideFollowUps') === 'true';
 
 const isInappropriateContent = (message) => {
     const inappropriateWords = [
@@ -140,14 +141,14 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         
         // Only create and append suggestions container after response is complete
         const suggestionsContainer = document.createElement("div");
-        suggestionsContainer.classList.add("suggestions-container");
-        suggestionsContainer.innerHTML = `
+suggestionsContainer.classList.add("suggestions-container");
+suggestionsContainer.innerHTML = `
     <div class="suggestions-header">
         <h4 class="suggestions-title">Follow-ups:</h4>
         <div class="suggestions-options">
             <span class="three-dots material-symbols-rounded">more_horiz</span>
             <div class="options-dropdown">
-                <div class="option-item">Hide</div>
+                <div class="option-item">Hide Follow-ups</div>
             </div>
         </div>
     </div>
@@ -279,7 +280,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
       </div>
     </div>
   </div>`;
@@ -560,7 +561,7 @@ const showLoadingAnimation = () => {
                     </div>
                     <div class="message-actions">
                       <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-                      <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+                     <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
                     </div>
                   </div>
                 </div>`;
@@ -572,33 +573,44 @@ const showLoadingAnimation = () => {
 
 // Copy message text to the clipboard
 const copyMessage = (copyButton) => {
-  const messageText = copyButton.parentElement.querySelector(".text").innerText;
+  // Find the closest message container and then find the text element within it
+  const messageContainer = copyButton.closest('.message-container');
+  const messageText = messageContainer.querySelector(".text").innerText;
 
-  navigator.clipboard.writeText(messageText);
-  copyButton.innerText = "done"; // Show confirmation icon
-  setTimeout(() => copyButton.innerText = "content_copy", 1000); // Revert icon after 1 second
+  navigator.clipboard.writeText(messageText).then(() => {
+    copyButton.innerText = "done"; // Show confirmation icon
+    setTimeout(() => copyButton.innerText = "content_copy", 1000); // Revert icon after 1 second
+  }).catch(err => {
+    console.error('Failed to copy text: ', err);
+  });
 }
 
-// Add this function to handle message refresh
-const refreshMessage = async (refreshButton) => {
-  const messageDiv = refreshButton.closest('.message');
-  const textElement = messageDiv.querySelector('.text');
-  const originalMessage = textElement.innerText;
-  
-  // Show loading state
-  messageDiv.classList.add('loading');
-  refreshButton.classList.add('spinning');
-  
-  try {
-    // Regenerate the response
-    await generateAPIResponse(messageDiv);
-  } catch (error) {
-    console.error('Error refreshing message:', error);
-    textElement.innerText = originalMessage;
-  } finally {
-    messageDiv.classList.remove('loading');
-    refreshButton.classList.remove('spinning');
-  }
+const toggleFollowUps = (menuButton) => {
+    const messageDiv = menuButton.closest('.message');
+    const suggestionsContainer = messageDiv.querySelector('.suggestions-container');
+    
+    if (!suggestionsContainer) {
+        // If suggestions are hidden, show them
+        displaySuggestions(messageDiv, messageDiv.querySelector('.text').textContent);
+        menuButton.style.display = 'none';
+    }
+};
+
+const hideFollowUps = (suggestionsContainer) => {
+    const messageDiv = suggestionsContainer.closest('.message');
+    const menuButton = messageDiv.querySelector('.menu-icon');
+    
+    // Add the hiding class for animation
+    suggestionsContainer.classList.add('hiding');
+    
+    // Wait for animation to complete before setting display none
+    setTimeout(() => {
+        suggestionsContainer.style.display = 'none';
+        // Show the menu icon
+        if (menuButton) {
+            menuButton.style.display = 'inline-flex';
+        }
+    }, 400);
 };
 
 // Handle sending outgoing chat messages

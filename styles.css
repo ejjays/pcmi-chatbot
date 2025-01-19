@@ -770,9 +770,6 @@ img {
   line-height: 1.4; /* Maintain consistent line height */
 }
 
-
-
-/* Add staggered delay for each suggestion item */
 .suggestion-item:nth-child(1) { animation-delay: 0.1s; }
 .suggestion-item:nth-child(3) { animation-delay: 0.2s; }
 .suggestion-item:nth-child(5) { animation-delay: 0.3s; }
@@ -905,4 +902,42 @@ img {
 
 .message-actions .icon.spinning {
   animation: spin 1s linear infinite;
+}
+
+
+
+/* EXPP */
+
+
+.menu-icon {
+    display: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.menu-icon:hover {
+    background: var(--secondary-hover-color);
+}
+
+.message-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 8px;
+    margin-left: 0px;
+}
+
+.message-actions .icon {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    visibility: hidden;
+}
+
+.chat-list .message:hover .message-actions .icon {
+    visibility: visible;
 }
