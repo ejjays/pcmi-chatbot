@@ -108,6 +108,8 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         3. Help users explore different aspects of the same topic
         4. Stay within the context of the current discussion
         5. Just keep it simple and straightforward.
+        
+    ### IMPORTANT: Always make the suggestions in basic english, simple and consice.
 
         Additional rules:
         - Questions must be directly related to the previous response
@@ -115,6 +117,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         - Maintain conversation continuity
         - Avoid generic or unrelated topics
         - Use the church knowledge base only when contextually relevant, and if the user question is non-church related just focus on it don't force church related suggestions.
+        - Don't provide follow up suggestions that not in the scope of our knowledge base.
         - Keep questions conversational and natural
         - Instead of saying saying the full name of our church "Pag-ibig Christian Ministries Infanta", you can use the word "your church" to make it simple and concise.
         
