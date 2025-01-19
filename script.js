@@ -278,8 +278,11 @@ const createMessageWithMedia = (text, mediaPath) => {
       ${mediaElement}
       <p class="text">${text}</p>
     </div>
-  </div>
-  <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>`;
+    <div class="message-actions">
+      <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
+      <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+    </div>
+  </div>`;
 };
 
 const getCustomErrorMessage = (error) => {
@@ -556,8 +559,11 @@ const showLoadingAnimation = () => {
                       <div class="loading-bar"></div>
                     </div>
                   </div>
-                </div>
-                <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>`;
+                  <div class="message-actions">
+                    <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
+                    <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+                  </div>
+                </div>`;
   const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
   chatContainer.appendChild(incomingMessageDiv);
   chatContainer.scrollTo(0, chatContainer.scrollHeight);
@@ -572,6 +578,28 @@ const copyMessage = (copyButton) => {
   copyButton.innerText = "done"; // Show confirmation icon
   setTimeout(() => copyButton.innerText = "content_copy", 1000); // Revert icon after 1 second
 }
+
+// Add this function to handle message refresh
+const refreshMessage = async (refreshButton) => {
+  const messageDiv = refreshButton.closest('.message');
+  const textElement = messageDiv.querySelector('.text');
+  const originalMessage = textElement.innerText;
+  
+  // Show loading state
+  messageDiv.classList.add('loading');
+  refreshButton.classList.add('spinning');
+  
+  try {
+    // Regenerate the response
+    await generateAPIResponse(messageDiv);
+  } catch (error) {
+    console.error('Error refreshing message:', error);
+    textElement.innerText = originalMessage;
+  } finally {
+    messageDiv.classList.remove('loading');
+    refreshButton.classList.remove('spinning');
+  }
+};
 
 // Handle sending outgoing chat messages
 const handleOutgoingChat = () => {
