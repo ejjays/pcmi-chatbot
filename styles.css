@@ -869,12 +869,14 @@ img {
 }
 
 
+/* EXPERIMENTING */
 
 .message-actions {
   display: flex;
   gap: 8px;
   align-items: center;
   margin-top: 8px;
+  margin-left: 3.5rem; /* Add left margin to align with the text */
 }
 
 .message-actions .icon {
@@ -891,14 +893,4 @@ img {
 
 .message-actions .icon:hover {
   background: var(--secondary-hover-color);
-}
-
-/* Animation for refresh icon when spinning */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.message-actions .icon.spinning {
-  animation: spin 1s linear infinite;
 }

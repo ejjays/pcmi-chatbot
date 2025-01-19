@@ -277,10 +277,10 @@ const createMessageWithMedia = (text, mediaPath) => {
     <div class="message-container">
       ${mediaElement}
       <p class="text">${text}</p>
-    </div>
-    <div class="message-actions">
-      <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-      <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+      <div class="message-actions">
+        <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
+        <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+      </div>
     </div>
   </div>`;
 };
@@ -558,10 +558,10 @@ const showLoadingAnimation = () => {
                       <div class="loading-bar"></div>
                       <div class="loading-bar"></div>
                     </div>
-                  </div>
-                  <div class="message-actions">
-                    <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-                    <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+                    <div class="message-actions">
+                      <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
+                      <span onClick="refreshMessage(this)" class="icon material-symbols-rounded">refresh</span>
+                    </div>
                   </div>
                 </div>`;
   const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
