@@ -875,8 +875,9 @@ img {
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: flex-start; 
   margin-top: 8px;
-  margin-left: 3.5rem; /* Add left margin to align with the text */
+  margin-left: 2px;
 }
 
 .message-actions .icon {
@@ -885,6 +886,7 @@ img {
   border-radius: 50%;
   transition: all 0.3s ease;
   visibility: hidden;
+  color: var(--text-color);
 }
 
 .chat-list .message:hover .message-actions .icon {
@@ -893,4 +895,14 @@ img {
 
 .message-actions .icon:hover {
   background: var(--secondary-hover-color);
+}
+
+/* Animation for refresh icon */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.message-actions .icon.spinning {
+  animation: spin 1s linear infinite;
 }
