@@ -170,6 +170,7 @@ threeDots.addEventListener('click', (e) => {
 
 hideOption.addEventListener('click', () => {
     const suggestionsContainer = optionsDropdown.closest('.suggestions-container');
+    const messageDiv = suggestionsContainer.closest('.message');
     
     // Add the hiding class for animation
     suggestionsContainer.classList.add('hiding');
@@ -179,6 +180,17 @@ hideOption.addEventListener('click', () => {
         suggestionsContainer.style.display = 'none';
         localStorage.setItem('hideFollowUps', 'true');
         areFollowUpsHidden = true;
+        
+        // Show menu icon for this message
+        const menuIcon = messageDiv.querySelector('.menu-icon');
+        if (menuIcon) {
+            menuIcon.style.display = 'inline-flex';
+        }
+        
+        // Show menu icons for all messages
+        document.querySelectorAll('.message .menu-icon').forEach(icon => {
+            icon.style.display = 'inline-flex';
+        });
     }, 400);
 });
 
@@ -275,7 +287,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
+        <span  " class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
       </div>
     </div>
   </div>`;
@@ -556,7 +568,7 @@ const showLoadingAnimation = () => {
                     </div>
                     <div class="message-actions">
                       <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-                      <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: ${areFollowUpsHidden ? 'inline-flex' : 'none'};">menu</span>
+                      <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">more_horiz</span>
                     </div>
                   </div>
                 </div>`;
