@@ -727,13 +727,13 @@ img {
 .suggestions-container {
   opacity: 0;
   animation: fadeIn 0.5s ease-in-out forwards;
-  max-height: 1000px;
+  max-height: 1000px; /* Keep this */
   opacity: 1;
   margin: 15px 0;
   padding: 10px;
   transform-origin: top;
   transform: scaleY(1);
-  transition: all 1s cubic-bezier(0.25, 0.8, 0.5, 1);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.5, 1);
   overflow: hidden;
 }
 
@@ -743,14 +743,34 @@ img {
   margin: 0;
   padding: 0;
   transform: scaleY(0);
-  transition: all 1s cubic-bezier(0.25, 0.8, 0.5, 1);
+  /* Remove transform-origin if present */
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.5, 1);
   pointer-events: none;
 }
 
+/* Add these new rules */
+.suggestions-list {
+  transform-origin: top;
+  height: auto;
+  min-height: fit-content;
+}
+
 .suggestion-item {
+  height: auto;
+  min-height: fit-content;
+  transform-origin: top;
   opacity: 0;
   animation: fadeIn 0.5s ease-in-out forwards;
 }
+
+.suggestion-text {
+  height: auto;
+  transform-origin: top;
+  white-space: normal; /* Prevent text compression */
+  line-height: 1.4; /* Maintain consistent line height */
+}
+
+
 
 /* Add staggered delay for each suggestion item */
 .suggestion-item:nth-child(1) { animation-delay: 0.1s; }
