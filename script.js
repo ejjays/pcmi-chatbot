@@ -280,7 +280,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
+        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: ${areFollowUpsHidden ? 'inline-flex' : 'none'};">menu</span>
       </div>
     </div>
   </div>`;
@@ -561,7 +561,7 @@ const showLoadingAnimation = () => {
                     </div>
                     <div class="message-actions">
                       <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-                     <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
+                      <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: ${areFollowUpsHidden ? 'inline-flex' : 'none'};">menu</span>
                     </div>
                   </div>
                 </div>`;
@@ -606,6 +606,9 @@ const hideFollowUps = (suggestionsContainer) => {
     // Wait for animation to complete before setting display none
     setTimeout(() => {
         suggestionsContainer.style.display = 'none';
+        localStorage.setItem('hideFollowUps', 'true');
+        areFollowUpsHidden = true;
+        
         // Show the menu icon
         if (menuButton) {
             menuButton.style.display = 'inline-flex';
