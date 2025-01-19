@@ -87,9 +87,9 @@ const createMessageElement = (content, ...classes) => {
 }
 
 const displaySuggestions = async (messageDiv, aiResponse) => {
-    
-    if (aiResponse.trim() === "I'm sorry, I can't answer that.") {
-        return;
+    // Check if suggestions are hidden
+    if (localStorage.getItem('hideFollowUps') === 'true') {
+        return; // Don't display suggestions if they're hidden
     }
     
     if (isResponseGenerating) return;
@@ -116,17 +116,11 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         - Focus on the specific subject matter being discussed
         - Maintain conversation continuity
         - Avoid generic or unrelated topics
-        - Use the church knowledge base only when contextually relevant, and if the user question is non-church related just focus on it don't force church related suggestions.
+        - Use the church knowledge base "${churchKnowledge}" only when contextually relevant, and if the user question is non-church related just focus on it don't force church related suggestions.
         - Don't provide follow up suggestions that not in the scope of our knowledge base.
         - Keep questions conversational and natural
         - Instead of saying saying the full name of our church "Pag-ibig Christian Ministries Infanta", you can use the word "your church" to make it simple and concise.
-        
-        ### Preventing Self-Referential Follow-ups
-
-        STRICTLY Forbidden: 
-        - Avoid the word "childcare", "live stream".
-        - If a user asks an inappropriate or filthy question, respond with and you already reponded this exact amswer "I'm sorry, I can't answer that.", Do not provide that 4 follow-up suggestions options after giving this response.
-        
+ 
         Return only the questions, separated by |`;
     
     try {
@@ -189,7 +183,7 @@ hideOption.addEventListener('click', () => {
         suggestionsContainer.style.display = 'none';
         localStorage.setItem('hideFollowUps', 'true');
         areFollowUpsHidden = true;
-    }, 400); // Match this with the CSS transition duration
+    }, 400);
 });
 
 // Close dropdown when clicking outside
@@ -364,7 +358,7 @@ It is led by experienced church member (Pastor Edong and his wife Sis. Camil).
 
 ### — It's all about Jesus!: When user asked about Intentional Discipleship always mention the word "— It's all about Jesus!" at the end of your response. Make sure to add appropriate emoji like "— It's all about Jesus! [Your emoji]." Take note: (Only include — It's all about Jesus, only in this PERFECTLY EXACT QUESTION: "What is Intensional Discipleship") Use that phrase only if they asked ABOUT intentional Discipleship Related and if not dont use it. (also STRICTLY don't mention that "— It's all about Jesus!" ALWAYS in every FOLLOW UP QUESTIONS!)
 
-### Winning souls: When user asked "What is Intentional Discipleship?" always include the purpose of it "winning souls" or "win souls" "(and other similar)". Include it (without explicitly saying the word "purpose"). and also (Use this exact phrase in your answer "It's a process of mentoring and being mentored." Note: (Only include — It's a process of mentoring and being mentored, only in this PERFECTLY EXACT QUESTION: "What is Intensional Discipleship") and do not mention it in the beggining of your answer so its like in the body of ur explanation) and dont se this phrase in other services like cellgroup, kamustahan, sunday service, prayer warrior, and others.
+### Winning souls: When user asked "What is Intentional Discipleship?" always include the purpose of it "winning souls" or "win souls" "(and other similar)". Include it (without explicitly saying the word "purpose"). and also (Use this exact phrase in your answer "It's a process of mentoring and being mentored." Note: (Only include — It's a process of mentoring and being mentored, only in this PERFECTLY EXACT QUESTION: "What is Intensional Discipleship" (NOTE ONLY THIS SPQCIFIC QUESTION "What is Intensional Discipleship" like its very case sensitive) and do not mention it in the beggining of your answer so its like in the body of ur explanation) and dont se this phrase in other services like cellgroup, kamustahan, sunday service, prayer warrior, and others.
 
 ### School of Leaders: When user asked about intensional Discipleship also mention that Intensional Discipleship is the school of leaders.
   
@@ -628,6 +622,7 @@ deleteChatButton.addEventListener("click", () => {
   if (confirm("Are you sure you want to delete all the chats?")) {
     localStorage.removeItem("saved-chats");
     localStorage.removeItem("conversation-history");
+    localStorage.removeItem("hideFollowUps"); // Reset the hidden state
     conversationHistory = [];
     loadDataFromLocalstorage();
   }
