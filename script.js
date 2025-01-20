@@ -5,20 +5,10 @@ let conversationHistory = [];
 let linkFormatRules = '';
 let userIsScrolling = false;
 let areFollowUpsHidden = false; 
+let userMessage = null;
+let isResponseGenerating = false; 
 
-const isInappropriateContent = (message) => {
-    const inappropriateWords = [
-        // Add your list of inappropriate words here
-        'porn', 'sex', 'xxx', 'nude', 'naked', 
-        // Add more inappropriate words as needed
-    ];
-    
-    return inappropriateWords.some(word => 
-        message.toLowerCase().includes(word.toLowerCase())
-    );
-}
-
-// Add this after your initial variable declarations
+// Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
         timeZone: "Asia/Manila",
@@ -32,7 +22,7 @@ function getPhilippinesTime() {
     });
 }
 
-// Load both files when the page loads
+// Load Training-base
 Promise.all([
   fetch('training-data/church-knowledge.txt').then(response => response.text()),
   fetch('training-data/ai-rules.txt').then(response => response.text()),
@@ -53,10 +43,6 @@ const suggestions = document.querySelectorAll(".suggestion");
 const toggleThemeButton = document.querySelector("#theme-toggle-button");
 const deleteChatButton = document.querySelector("#delete-chat-button");
 
-// State variables
-let userMessage = null;
-let isResponseGenerating = false; 
-
 // API configuration
 const API_KEY = "AIzaSyC0N559LhkMH1GqrvF1Pg7cpkMmaHMZgZg"; // API key 
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
@@ -67,7 +53,7 @@ const loadDataFromLocalstorage = () => {
   const savedHistory = localStorage.getItem("conversation-history");
   const isLightMode = (localStorage.getItem("themeColor") === "light_mode");
 
-  // Load conversation history if it exists
+  // Load conversation history if exists
   if (savedHistory) {
     conversationHistory = JSON.parse(savedHistory);
   }
@@ -96,7 +82,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         existingSuggestions.remove();
     }
 
-    // Create a more context-aware prompt
+    // Follow-ups Suggestions Rules
     const suggestionsPrompt = `Based on the specific topic and context of your previous response: "${aiResponse}",
         generate exactly 4 natural follow-up questions that:
         1. Directly relate to the main topic just discussed
@@ -158,7 +144,7 @@ suggestionsContainer.innerHTML = `
         
         messageDiv.appendChild(suggestionsContainer);
         
-        // After creating the suggestions container
+// After creating the suggestions container
 const threeDots = suggestionsContainer.querySelector('.three-dots');
 const optionsDropdown = suggestionsContainer.querySelector('.options-dropdown');
 const hideOption = suggestionsContainer.querySelector('.option-item');
@@ -172,7 +158,7 @@ hideOption.addEventListener('click', () => {
     const suggestionsContainer = optionsDropdown.closest('.suggestions-container');
     const messageDiv = suggestionsContainer.closest('.message');
     
-    // Add the hiding class for animation
+    // Hiding class for animation
     suggestionsContainer.classList.add('hiding');
     
     // Wait for animation to complete before setting display none
@@ -181,7 +167,7 @@ hideOption.addEventListener('click', () => {
         localStorage.setItem('hideFollowUps', 'true');
         areFollowUpsHidden = true;
         
-        // Show menu icon for this message
+        // Show menu icon message
         const menuIcon = messageDiv.querySelector('.menu-icon');
         if (menuIcon) {
             menuIcon.style.display = 'inline-flex';
@@ -199,18 +185,16 @@ document.addEventListener('click', () => {
     optionsDropdown.classList.remove('show');
 });
 
-        // Add click handlers
+        // Click handlers
         messageDiv.querySelectorAll(".suggestion-item").forEach(item => {
             item.addEventListener("click", () => {
                 const text = item.querySelector(".suggestion-text").textContent;
                 document.querySelector(".typing-input").value = text;
                 
-                // Remove all suggestion containers
                 document.querySelectorAll(".suggestions-container").forEach(container => {
                     container.remove();
                 });
                 
-                // Trigger the send button click
                 document.querySelector("#send-message-button").click();
             });
         });
@@ -224,7 +208,6 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     const words = text.split(' ');
     let currentWordIndex = 0;
 
-    // Remove any existing suggestions container first
     const existingSuggestions = incomingMessageDiv.querySelector(".suggestions-container");
     if (existingSuggestions) {
         existingSuggestions.remove();
@@ -254,7 +237,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     }, 75);
 }
 
-// Add scroll event listener to detect manual scrolling
+// Event listener detect manual scrolling
 chatContainer.addEventListener('scroll', () => {
     userIsScrolling = true;
     // Reset the flag after a short delay
@@ -287,7 +270,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span  " class="menu-icon icon material-symbols-rounded" style="display: none;">menu</span>
+        <span  " class="menu-icon icon material-symbols-rounded" style="display: none;">more_horiz</span>
       </div>
     </div>
   </div>`;
@@ -310,12 +293,16 @@ const getCustomErrorMessage = (error) => {
     return error.message;
 };
 
+const isInappropriateContent = (message) => {
+    const inappropriateKeywords = ["badword1", "badword2", "offensive phrase"]; 
+    return inappropriateKeywords.some(keyword => message.toLowerCase().includes(keyword));
+};
 
 // Fetch response from the API based on user message
 const generateAPIResponse = async (incomingMessageDiv) => {
     const textElement = incomingMessageDiv.querySelector(".text");
     
-    // Check for inappropriate content first
+    // Check inappropriate content
     if (isInappropriateContent(userMessage)) {
         textElement.textContent = "I'm sorry, I can't answer that.";
         isResponseGenerating = false;
@@ -328,7 +315,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
         });
         localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
         
-        return; // Exit early without showing suggestions
+        return;
     }
     
   // Check if message contains location-related keywords or other service keywords
@@ -549,7 +536,7 @@ If a user asks about non-church-related topics and it’s relevant to the conver
   }
 }
 
-// Show a loading animation while waiting for the API response
+// Show loading animation while waiting for API response
 const showLoadingAnimation = () => {
   const html = `<div class="message-content">
                   <div class="header-row">
@@ -578,14 +565,13 @@ const showLoadingAnimation = () => {
   generateAPIResponse(incomingMessageDiv);
 }
 
-// Copy message text to the clipboard
+// Copy message text to clipboard
 const copyMessage = (copyButton) => {
-  // Find the closest message container and then find the text element within it
   const messageContainer = copyButton.closest('.message-container');
   const messageText = messageContainer.querySelector(".text").innerText;
 
   navigator.clipboard.writeText(messageText).then(() => {
-    copyButton.innerText = "done"; // Show confirmation icon
+    copyButton.innerText = "done"; 
     setTimeout(() => copyButton.innerText = "content_copy", 1000); // Revert icon after 1 second
   }).catch(err => {
     console.error('Failed to copy text: ', err);
@@ -608,7 +594,6 @@ const hideFollowUps = (suggestionsContainer) => {
     const messageDiv = suggestionsContainer.closest('.message');
     const menuButton = messageDiv.querySelector('.menu-icon');
     
-    // Add the hiding class for animation
     suggestionsContainer.classList.add('hiding');
     
     // Wait for animation to complete before setting display none
