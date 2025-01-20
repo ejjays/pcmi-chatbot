@@ -611,6 +611,10 @@ const hideFollowUps = (suggestionsContainer) => {
 
 // Handle sending outgoing chat messages
 const handleOutgoingChat = () => {
+  document.querySelectorAll(".suggestions-container").forEach(container => {
+    container.remove();
+  });
+
   userMessage = typingForm.querySelector(".typing-input").value.trim() || userMessage;
   if(!userMessage || isResponseGenerating) return;
 
