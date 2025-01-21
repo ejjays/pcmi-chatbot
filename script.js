@@ -270,7 +270,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span  " class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
+        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
       </div>
     </div>
   </div>`;
@@ -578,15 +578,32 @@ const copyMessage = (copyButton) => {
   });
 }
 
-const toggleFollowUps = (menuButton) => {
+const toggleFollowUps = async (menuButton) => {
     const messageDiv = menuButton.closest('.message');
+    const textElement = messageDiv.querySelector('.text');
     
-    if (areFollowUpsHidden) {
-        // If suggestions are hidden, show them
-        areFollowUpsHidden = false;
-        localStorage.setItem('hideFollowUps', 'false');
-        displaySuggestions(messageDiv, messageDiv.querySelector('.text').textContent);
-        menuButton.style.display = 'none'; 
+    // Don't proceed if already generating response
+    if (isResponseGenerating) return;
+
+    try {
+        // Remove any existing suggestions first
+        const existingSuggestions = messageDiv.querySelector('.suggestions-container');
+        if (existingSuggestions) {
+            existingSuggestions.remove();
+        }
+
+        // Always try to show suggestions
+        menuButton.style.display = 'none';
+        
+        // Generate new suggestions if we have text content
+        if (textElement && textElement.textContent) {
+            await displaySuggestions(messageDiv, textElement.textContent);
+        }
+
+    } catch (error) {
+        console.error('Error showing suggestions:', error);
+        // Show menu button again if failed
+        menuButton.style.display = 'inline-flex';
     }
 };
 
@@ -596,13 +613,8 @@ const hideFollowUps = (suggestionsContainer) => {
     
     suggestionsContainer.classList.add('hiding');
     
-    // Wait for animation to complete before setting display none
     setTimeout(() => {
-        suggestionsContainer.style.display = 'none';
-        localStorage.setItem('hideFollowUps', 'true');
-        areFollowUpsHidden = true;
-        
-        // Show the menu icon ONLY after hiding follow-ups
+        suggestionsContainer.remove(); // Remove instead of hide
         if (menuButton) {
             menuButton.style.display = 'inline-flex';
         }
