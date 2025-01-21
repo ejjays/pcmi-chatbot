@@ -99,6 +99,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         4. Stay within the context of the current discussion
         5. Just keep it simple and straightforward.
         6. Always provide suggestions based on the user's language input. 
+        7. When providing suggestions imagine you are the actual user that will ask questions.
         
     ### IMPORTANT: Always make the suggestions in lowest basic language version, short simple but consice.
 
@@ -215,6 +216,7 @@ document.addEventListener('click', () => {
 const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     const words = text.split(' ');
     let currentWordIndex = 0;
+    let displayedText = '';
 
     const existingSuggestions = incomingMessageDiv.querySelector(".suggestions-container");
     if (existingSuggestions) {
@@ -222,7 +224,13 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     }
 
     const typingInterval = setInterval(() => {
-        textElement.innerHTML += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex++];
+        displayedText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex++];
+        // Process the entire accumulated text for bold formatting
+        const formattedText = displayedText
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            
+        textElement.innerHTML = formattedText;
         incomingMessageDiv.querySelector(".icon").classList.add("hide");
 
         if (currentWordIndex === words.length) {
@@ -231,13 +239,11 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
             incomingMessageDiv.querySelector(".icon").classList.remove("hide");
             localStorage.setItem("saved-chats", chatContainer.innerHTML);
             
-            // Only show suggestions if they're not hidden and it's not an inappropriate response
             if (!areFollowUpsHidden && text.trim() !== "I'm sorry, I can't answer that.") {
                 setTimeout(() => {
                     displaySuggestions(incomingMessageDiv, text);
                 }, 500);
             } else {
-                // Show the menu icon if suggestions are hidden
                 const menuButton = incomingMessageDiv.querySelector('.menu-icon');
                 if (menuButton) {
                     menuButton.style.display = 'inline-flex';
@@ -511,9 +517,10 @@ If a user asks about non-church-related topics and it’s relevant to the conver
     const data = await response.json();
     if (!response.ok) throw new Error(data.error.message);
 
-    const apiResponse = data.candidates[0].content.parts[0].text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
+  const apiResponse = data.candidates[0].content.parts[0].text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+  
     conversationHistory.push({
       role: "assistant",
       content: apiResponse

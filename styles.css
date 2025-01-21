@@ -386,6 +386,11 @@ body.hide-header .header {
   font-weight: 600;
 }
 
+strong {
+    font-weight: 700;
+    display: inline;
+}
+
 .chat-list .message .text em,
 .chat-list .message .text i {
   font-style: italic;
