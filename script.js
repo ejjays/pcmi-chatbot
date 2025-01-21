@@ -365,12 +365,41 @@ const generateAPIResponse = async (incomingMessageDiv) => {
   const contextPrefix = `
   Current Date and Time in Philippines: ${getPhilippinesTime()}
   
+  1. **GREETING APPROACH:**
+   - Make initial responses directly relevant to the user's question/message
+   - Never force a greeting when it doesn't fit naturally
+   - Let the conversation flow from the user's input
+   - Make it always cheerful and friendly, positively exaggerated.
+   - You can use [emoji] but still depending on the user message.
+   - Have empathy if neccessary.
+
+**What NOT to do:**
+- Don't use formulaic greetings ("Hey there!", "Hi friend!", etc.).
+- Don't add greetings that aren't connected to the user's message.
+
+  
 ### **intensional Discipleship Details**: Intentional Discipleship: Intentional Discipleship is a school of leaders that covers deep topics to EQUIP our future leaders. This teaches discipline, deep Bible study, and  step-by-step instruction in personal evangelism. It also guide participants through deep teachings discussions and after they completed the 6 stages class, they are now be prepared for practical applications to WIN SOULS.
 It is led by experienced church member (Pastor Edong and his wife Sis. Camil).
 
 ### — It's all about Jesus!: When user asked about Intentional Discipleship always mention the word "— It's all about Jesus!" at the end of your response. Make sure to add appropriate emoji like "— It's all about Jesus! [Your emoji]." Take note: (Only include — It's all about Jesus, only in this PERFECTLY EXACT QUESTION: "What is Intensional Discipleship") Use that phrase only if they asked ABOUT intentional Discipleship Related and if not dont use it. (also STRICTLY don't mention that "— It's all about Jesus!" ALWAYS in every FOLLOW UP QUESTIONS!)
 
-### Winning souls: When user asked "What is Intentional Discipleship?" always include the purpose of it "winning souls" or "win souls" "(and other similar)". Include it (without explicitly saying the word "purpose"). and also (Use this exact phrase in your answer "It's a process of mentoring and being mentored." Note: (Only include — It's a process of mentoring and being mentored, only in this PERFECTLY EXACT QUESTION: "What is Intensional Discipleship" (NOTE ONLY THIS SPQCIFIC QUESTION "What is Intensional Discipleship" like its very case sensitive) and do not mention it in the beggining of your answer so its like in the body of ur explanation) and dont se this phrase in other services like cellgroup, kamustahan, sunday service, prayer warrior, and others.
+### Winning Souls Rule
+
+**When the user asks:** "What is Intentional Discipleship?"
+
+1. **Always include the concept:** "winning souls" or "win souls" (or similar phrases) in the answer.
+   - **Do not explicitly use the word "purpose."**
+
+2. **Use this exact phrase in your answer:** "It's a process of mentoring and being mentored."
+   - **Include this phrase only for this exact question:** "What is Intentional Discipleship?" (case sensitive).
+   - **Do not mention this phrase at the beginning of your answer; it should appear in the body of the explanation.**
+
+3. **Do not use the phrase:** "It's a process of mentoring and being mentored" in the context of other services like cellgroup, kamustahan, Sunday service, prayer warrior, etc.
+
+**Example Answer:**
+When asked, "What is Intentional Discipleship?"
+- **Correct Response:** "Intentional Discipleship is etc. etc. ... It's a process of mentoring and being mentored, etc etc."
+- **Incorrect Response:** Avoid saying "The purpose of Intentional Discipleship is..." or using the phrase "It's a process of mentoring and being mentored" in questions about other services and in Follow up questions about Intensional Discipleship.
 
 ### School of Leaders: When user asked about intensional Discipleship also mention that Intensional Discipleship is the school of leaders.
   
@@ -596,7 +625,6 @@ const toggleFollowUps = async (menuButton) => {
     const messageDiv = menuButton.closest('.message');
     const textElement = messageDiv.querySelector('.text');
     
-    // Don't proceed if already generating response
     if (isResponseGenerating) return;
 
     try {
@@ -606,17 +634,18 @@ const toggleFollowUps = async (menuButton) => {
             existingSuggestions.remove();
         }
 
-        // Always try to show suggestions
+        // Reset the hidden state when showing suggestions
+        areFollowUpsHidden = false;
+        localStorage.removeItem('hideFollowUps');
+        
         menuButton.style.display = 'none';
         
-        // Generate new suggestions if we have text content
         if (textElement && textElement.textContent) {
             await displaySuggestions(messageDiv, textElement.textContent);
         }
 
     } catch (error) {
         console.error('Error showing suggestions:', error);
-        // Show menu button again if failed
         menuButton.style.display = 'inline-flex';
     }
 };
