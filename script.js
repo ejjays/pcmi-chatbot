@@ -555,7 +555,7 @@ const showLoadingAnimation = () => {
                     </div>
                     <div class="message-actions">
                       <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-                      <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">more_horiz</span>
+                      <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
                     </div>
                   </div>
                 </div>`;
