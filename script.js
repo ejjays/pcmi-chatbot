@@ -8,6 +8,11 @@ let areFollowUpsHidden = false;
 let userMessage = null;
 let isResponseGenerating = false; 
 
+const loadInitialState = () => {
+    areFollowUpsHidden = localStorage.getItem('hideFollowUps') === 'true';
+};
+loadInitialState();
+
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -53,6 +58,10 @@ const loadDataFromLocalstorage = () => {
   const savedHistory = localStorage.getItem("conversation-history");
   const isLightMode = (localStorage.getItem("themeColor") === "light_mode");
 
+  // Reset the follow-ups hidden state when loading
+  areFollowUpsHidden = false;
+  localStorage.removeItem('hideFollowUps');
+
   // Load conversation history if exists
   if (savedHistory) {
     conversationHistory = JSON.parse(savedHistory);
@@ -62,9 +71,8 @@ const loadDataFromLocalstorage = () => {
   chatContainer.innerHTML = savedChats || '';
   document.body.classList.toggle("hide-header", savedChats);
 
-  chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to the bottom
+  chatContainer.scrollTo(0, chatContainer.scrollHeight);
 }
-
 // Create a new message element and return it
 const createMessageElement = (content, ...classes) => {
   const div = document.createElement("div");
@@ -223,11 +231,17 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
             incomingMessageDiv.querySelector(".icon").classList.remove("hide");
             localStorage.setItem("saved-chats", chatContainer.innerHTML);
             
-            // Only show suggestions if it's NOT the inappropriate response
-            if (text.trim() !== "I'm sorry, I can't answer that.") {
+            // Only show suggestions if they're not hidden and it's not an inappropriate response
+            if (!areFollowUpsHidden && text.trim() !== "I'm sorry, I can't answer that.") {
                 setTimeout(() => {
                     displaySuggestions(incomingMessageDiv, text);
                 }, 500);
+            } else {
+                // Show the menu icon if suggestions are hidden
+                const menuButton = incomingMessageDiv.querySelector('.menu-icon');
+                if (menuButton) {
+                    menuButton.style.display = 'inline-flex';
+                }
             }
         }
         
@@ -613,11 +627,20 @@ const hideFollowUps = (suggestionsContainer) => {
     
     suggestionsContainer.classList.add('hiding');
     
+    // Set global state to hide suggestions
+    areFollowUpsHidden = true;
+    localStorage.setItem('hideFollowUps', 'true');
+    
     setTimeout(() => {
-        suggestionsContainer.remove(); // Remove instead of hide
+        suggestionsContainer.remove();
         if (menuButton) {
             menuButton.style.display = 'inline-flex';
         }
+        
+        // Show menu icons for all messages
+        document.querySelectorAll('.message .menu-icon').forEach(icon => {
+            icon.style.display = 'inline-flex';
+        });
     }, 400);
 };
 
@@ -674,8 +697,9 @@ deleteChatButton.addEventListener("click", () => {
   if (confirm("Are you sure you want to delete all the chats?")) {
     localStorage.removeItem("saved-chats");
     localStorage.removeItem("conversation-history");
-    localStorage.removeItem("hideFollowUps"); // Reset the hidden state
+    localStorage.removeItem("hideFollowUps");
     conversationHistory = [];
+    areFollowUpsHidden = false; 
     loadDataFromLocalstorage();
   }
 });
