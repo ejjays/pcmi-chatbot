@@ -129,7 +129,7 @@ suggestionsContainer.innerHTML = `
         <div class="suggestions-options">
             <span class="three-dots material-symbols-rounded">more_horiz</span>
             <div class="options-dropdown">
-                <div class="option-item">Hide Follow-ups</div>
+                <div class="option-item">Hide</div>
             </div>
         </div>
     </div>
@@ -270,7 +270,7 @@ const createMessageWithMedia = (text, mediaPath) => {
       <p class="text">${text}</p>
       <div class="message-actions">
         <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span  " class="menu-icon icon material-symbols-rounded" style="display: none;">more_horiz</span>
+        <span  " class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
       </div>
     </div>
   </div>`;
