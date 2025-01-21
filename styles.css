@@ -946,3 +946,24 @@ img {
 .chat-list .message:hover .message-actions .icon {
     visibility: visible;
 }
+
+
+
+
+
+/* Style for key points titles */
+.chat-list .message .text strong {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;  /* Makes it bolder */
+    font-size: 1.05rem; /* Slightly larger */
+    letter-spacing: 0.3px; /* Adds slight spacing between letters */
+    color: var(--text-color); /* Uses the theme's text color instead of blue */
+    display: inline-block;
+    margin-top: 8px;
+}
+
+/* Add some spacing after bullet points */
+.chat-list .message .text ul,
+.chat-list .message .text ol {
+    margin-bottom: 12px;
+}

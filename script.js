@@ -519,7 +519,8 @@ If a user asks about non-church-related topics and it’s relevant to the conver
 
   const apiResponse = data.candidates[0].content.parts[0].text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1') 
+    .replace(/\*(.*?)\*/g, '<strong>$1</strong>'); 
   
     conversationHistory.push({
       role: "assistant",
