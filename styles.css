@@ -955,11 +955,10 @@ img {
 .chat-list .message .text strong {
     font-family: "Poppins", sans-serif;
     font-weight: 700;  /* Makes it bolder */
-    font-size: 1.05rem; /* Slightly larger */
-    letter-spacing: 0.3px; /* Adds slight spacing between letters */
-    color: var(--text-color); /* Uses the theme's text color instead of blue */
+    font-size: 1.02rem; 
+    letter-spacing: 0.3px;
+    color: var(--text-color); 
     display: inline-block;
-    margin-top: 8px;
 }
 
 /* Add some spacing after bullet points */

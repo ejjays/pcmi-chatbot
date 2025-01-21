@@ -136,7 +136,7 @@ suggestionsContainer.innerHTML = `
     <div class="suggestions-header">
         <h4 class="suggestions-title">Follow-ups:</h4>
         <div class="suggestions-options">
-            <span class="three-dots material-symbols-rounded">more_horiz</span>
+            <span class="three-dots material-symbols-rounded">cancel</span>
             <div class="options-dropdown">
                 <div class="option-item">Hide</div>
             </div>
@@ -154,17 +154,13 @@ suggestionsContainer.innerHTML = `
         messageDiv.appendChild(suggestionsContainer);
         
 // After creating the suggestions container
+// After creating the suggestions container
 const threeDots = suggestionsContainer.querySelector('.three-dots');
 const optionsDropdown = suggestionsContainer.querySelector('.options-dropdown');
-const hideOption = suggestionsContainer.querySelector('.option-item');
 
 threeDots.addEventListener('click', (e) => {
     e.stopPropagation();
-    optionsDropdown.classList.toggle('show');
-});
-
-hideOption.addEventListener('click', () => {
-    const suggestionsContainer = optionsDropdown.closest('.suggestions-container');
+    const suggestionsContainer = e.target.closest('.suggestions-container');
     const messageDiv = suggestionsContainer.closest('.message');
     
     // Hiding class for animation
