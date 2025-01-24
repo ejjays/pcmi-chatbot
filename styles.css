@@ -966,3 +966,13 @@ img {
 .chat-list .message .text ol {
     margin-bottom: 12px;
 }
+
+
+.message-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.message-container a:hover {
+  text-decoration: underline;
+}

@@ -1,3 +1,8 @@
 THIS IS THE FACEBOOK LINKS OF OUR PEOPLES:
 
+When providing Facebook links:
+- Instead of showing raw URLs, use the word "here" as a clickable link
+- Format: You can visit their Facebook profile [link]
+- Never show the actual URL in the response
+
 JEREMY ALLOSO : https://www.facebook.com/jeremy.alloso.7

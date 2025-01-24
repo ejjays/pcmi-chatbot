@@ -13,6 +13,14 @@ const loadInitialState = () => {
 };
 loadInitialState();
 
+const formatFacebookLinks = (response) => {
+  // Format Jeremy's Facebook link to be clickable
+  return response.replace(
+    'https://www.facebook.com/jeremy.alloso.7',
+    '<a href="https://www.facebook.com/jeremy.alloso.7" target="_blank" rel="noopener noreferrer">here</a>'
+  );
+};
+
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -128,6 +136,18 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
 
         const data = await response.json();
         const suggestions = data.candidates[0].content.parts[0].text.split("|");
+        
+        let apiResponse = data.candidates[0].content.parts[0].text;
+    
+    // Format links before other formatting
+    apiResponse = formatFacebookLinks(apiResponse);
+    
+    // Apply other existing formatting
+    apiResponse = apiResponse
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^\*(.*)/gm, '<strong>· </strong>→ $1')
+      .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+
         
         // Only create and append suggestions container after response is complete
         const suggestionsContainer = document.createElement("div");
@@ -531,10 +551,13 @@ If a user asks about non-church-related topics and it’s relevant to the conver
     const data = await response.json();
     if (!response.ok) throw new Error(data.error.message);
 
-  const apiResponse = data.candidates[0].content.parts[0].text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1') 
-    .replace(/\*(.*?)\*/g, '<strong>$1</strong>'); 
+  const apiResponse = data.candidates[0].content.parts[0].text;
+    
+// Format Facebook links first
+const formattedResponse = formatFacebookLinks(apiResponse)
+  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1') 
+  .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
   
     conversationHistory.push({
       role: "assistant",
