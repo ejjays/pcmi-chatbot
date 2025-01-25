@@ -1,3 +1,17 @@
+### Facebook Link Formatting Rules
+
+When mentioning people's names in responses:
+1. If the person has a Facebook profile listed in the knowledge base, format their name as a clickable link
+2. Use this format: <a href="[facebook-url]" target="_blank" rel="noopener noreferrer">[Person's Name]</a>
+3. The link should display the person's actual name, not the word "here"
+4. Include proper HTML attributes for security and new tab opening
+
+Example format:
+Instead of writing "Jeremy Alloso", write:
+<a href="https://www.facebook.com/jeremy.alloso.7" target="_blank" rel="noopener noreferrer">Jeremy Alloso</a>
+
 THIS IS THE FACEBOOK LINKS OF OUR PEOPLES:
 
-JEREMY ALLOSO : https://www.facebook.com/jeremy.alloso.7
+- Jeremy Alloso : https://www.facebook.com/jeremy.alloso.7
+- Marlon Alloso : https://www.facebook.com/marlonalloso007
+- James Marlon Alloso : https://www.facebook.com/jamesmarlon.alloso.94

@@ -14,11 +14,7 @@ const loadInitialState = () => {
 loadInitialState();
 
 const formatFacebookLinks = (response) => {
-  // Format Jeremy's Facebook link to be clickable
-  return response.replace(
-    'https://www.facebook.com/jeremy.alloso.7',
-    '<a href="https://www.facebook.com/jeremy.alloso.7" target="_blank" rel="noopener noreferrer">here</a>'
-  );
+  return response;
 };
 
 // Real-time Date & Time
@@ -242,10 +238,11 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     const typingInterval = setInterval(() => {
         displayedText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex++];
         // Process the entire accumulated text for bold formatting
-        const formattedText = displayedText
+        let formattedText = formatFacebookLinks(displayedText)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
             
+        // Use innerHTML instead of textContent to preserve HTML formatting
         textElement.innerHTML = formattedText;
         incomingMessageDiv.querySelector(".icon").classList.add("hide");
 
