@@ -141,7 +141,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
     // Apply other existing formatting
     apiResponse = apiResponse
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^\*(.*)/gm, '<strong>· </strong>→ $1')
+      .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1') 
       .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
 
         
@@ -239,8 +239,9 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
         displayedText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex++];
         // Process the entire accumulated text for bold formatting
         let formattedText = formatFacebookLinks(displayedText)
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1')
+    .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
             
         // Use innerHTML instead of textContent to preserve HTML formatting
         textElement.innerHTML = formattedText;
@@ -389,8 +390,8 @@ You should always answer using simple, easy-to-understand language. Avoid comple
 
   
   1. **GREETING APPROACH:**
+  STRICT NOTE : DO NOT EVER MENTION THE WORD "HEY THERE" AS YOUR GREETING RESPONSE. JUST TO THESE: 
    - Make initial responses directly relevant to the user's question/message
-   - Never force a greeting when it doesn't fit naturally
    - Let the conversation flow from the user's input
    - Make it always cheerful and friendly, positively exaggerated.
    - You can use [emoji] but still depending on the user message.
@@ -515,6 +516,8 @@ If a user asks about non-church-related topics and it’s relevant to the conver
 - ALWAYS Remember previous messages in the conversation for reference.
 - Don't repeat questions that were already answered in the previos conversation.
 - ALWAYS Use conversation history to provide more relevant responses to the current user question.
+
+### Peoples Links: When mentioning our peoples always include at the end their facebook link if its ONLY included in your database. USE THIS FORMAT : "You can find [him/her] on Facebook: <a href="[facebook-url]" target="_blank" rel="noopener noreferrer">[Person's Name]</a>". NOTE: If the Facebook link of the people that is not listed on Facebook links in your database Do not use this format: "You can find [him/her] on Facebook: <a href="[facebook-url]" target="_blank" rel="noopener noreferrer">[Person's Name]</a>. Only use that format if that specific people's Facbook link is listed on your database. If the user asked about a facebook link of an specific people that, that people facebook link is not listed in your database include to say you dont have an information of that facebook link in your database... something like that.
 
   PRIORITY - CONVERSATION FLOW RULES:
   ${conversationFlowRules}
