@@ -141,7 +141,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
     // Apply other existing formatting
     apiResponse = apiResponse
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1') 
+      .replace(/^\*(.*)/gm, '<strong>■⁠ </strong>⁠$1') 
       .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
 
         
@@ -240,7 +240,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
         // Process the entire accumulated text for bold formatting
         let formattedText = formatFacebookLinks(displayedText)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1')
+    .replace(/^\*(.*)/gm, '<strong>■</strong>⁠$1')
     .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
             
         // Use innerHTML instead of textContent to preserve HTML formatting
@@ -556,7 +556,7 @@ If a user asks about non-church-related topics and it’s relevant to the conver
 // Format Facebook links first
 const formattedResponse = formatFacebookLinks(apiResponse)
   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  .replace(/^\*(.*)/gm, '<strong>ᐷ </strong>⁠$1') 
+  .replace(/^\*(.*)/gm, '<strong>■ </strong>⁠$1') 
   .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
   
     conversationHistory.push({
