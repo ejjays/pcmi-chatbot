@@ -13,10 +13,6 @@ const loadInitialState = () => {
 };
 loadInitialState();
 
-const formatFacebookLinks = (response) => {
-  return response;
-};
-
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -30,6 +26,10 @@ function getPhilippinesTime() {
         day: "numeric"
     });
 }
+
+const formatFacebookLinks = (response) => {
+  return response;
+};
 
 // Load Training-base
 Promise.all([
@@ -141,7 +141,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
     // Apply other existing formatting
     apiResponse = apiResponse
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^\*(.*)/gm, '<strong>■⁠ </strong>⁠$1') 
+      .replace(/^\*(.*)/gm, '<strong>■ ⁠ </strong>⁠$1') 
       .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
 
         
@@ -240,7 +240,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
         // Process the entire accumulated text for bold formatting
         let formattedText = formatFacebookLinks(displayedText)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^\*(.*)/gm, '<strong>■</strong>⁠$1')
+    .replace(/^\*(.*)/gm, '<strong>■ </strong>⁠$1')
     .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
             
         // Use innerHTML instead of textContent to preserve HTML formatting
@@ -498,7 +498,7 @@ If a user asks about non-church-related topics and it’s relevant to the conver
    **AI:** There are many delicious recipes you can try for dinner, like spaghetti carbonara or grilled chicken. (No need to relate to God in this context unless there's a specific religious dietary consideration mentioned.)
 
   
-  ### Forbidden words: 1. Dont ever mention the exact word "Community" instead of it just say "Family" or "church". 
+  ### Forbidden words: 1. Dont ever mention the exact word "Community" instead of it just say "Family" or "church". 2. Dont say this exact word "wraps up" when referring to an end of any of our church services just say "ends" or "end" for simplicity.
 
   ### Responding to Inappropriate Questions
 
@@ -556,7 +556,7 @@ If a user asks about non-church-related topics and it’s relevant to the conver
 // Format Facebook links first
 const formattedResponse = formatFacebookLinks(apiResponse)
   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  .replace(/^\*(.*)/gm, '<strong>■ </strong>⁠$1') 
+  .replace(/^\*(.*)/gm, '<strong>■  </strong>⁠$1') 
   .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
   
     conversationHistory.push({
