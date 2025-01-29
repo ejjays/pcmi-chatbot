@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="admin-styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
-<body>
+<body class="dark-mode">
     <div class="admin-container">
         <header>
             <h1>PCMI Chatbot Admin Panel</h1>
@@ -22,7 +22,12 @@
                     <button class="doc-btn" data-doc="link-format-rules">Link Format Rules</button>
                 </div>
                 <div class="editor-section">
-                    <h2 id="currentDoc">Select a document</h2>
+                    <div class="editor-header">
+                        <h2 id="currentDoc">Select a document</h2>
+                        <button id="fullscreenBtn" class="icon-btn">
+                            <span class="material-symbols-rounded">fullscreen</span>
+                        </button>
+                    </div>
                     <textarea id="editor"></textarea>
                     <div class="action-buttons">
                         <button id="saveBtn" disabled>Save Changes</button>

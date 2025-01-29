@@ -90,3 +90,25 @@ function disableButtons() {
     saveBtn.disabled = true;
     resetBtn.disabled = true;
 }
+
+// Fullscreen functionality
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+const editorSection = document.querySelector('.editor-section');
+
+fullscreenBtn.addEventListener('click', () => {
+    editorSection.classList.toggle('fullscreen-editor');
+    const icon = fullscreenBtn.querySelector('.material-symbols-rounded');
+    if (editorSection.classList.contains('fullscreen-editor')) {
+        icon.textContent = 'fullscreen_exit';
+    } else {
+        icon.textContent = 'fullscreen';
+    }
+});
+
+// Exit fullscreen with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && editorSection.classList.contains('fullscreen-editor')) {
+        editorSection.classList.remove('fullscreen-editor');
+        fullscreenBtn.querySelector('.material-symbols-rounded').textContent = 'fullscreen';
+    }
+});
