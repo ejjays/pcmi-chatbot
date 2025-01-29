@@ -1,22 +1,31 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training Data Editor</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="admin-styles.css">
 </head>
-<body class="dark-mode">
-    <div class="editor-view">
-        <div class="toolbar">
-            <div class="left-tools">
+<body>
+    <div class="container">
+        <!-- Document List View -->
+        <div id="documentList" class="document-list">
+            <h2>Training Data Documents</h2>
+            <div class="doc-buttons"></div>
+        </div>
+
+        <!-- Editor View -->
+        <div id="editorView" class="editor-view">
+            <div class="toolbar">
                 <button class="tool-btn" id="menuBtn">
                     <i class="material-icons">menu</i>
                 </button>
-                <button class="tool-btn" id="pinBtn">
-                    <i class="material-icons">push_pin</i>
+                <button class="tool-btn" id="saveBtn" disabled>
+                    <i class="material-icons">save</i>
+                </button>
+                <button class="tool-btn" id="resetBtn" disabled>
+                    <i class="material-icons">restore</i>
                 </button>
                 <button class="tool-btn" id="undoBtn">
                     <i class="material-icons">undo</i>
@@ -24,33 +33,37 @@
                 <button class="tool-btn" id="redoBtn">
                     <i class="material-icons">redo</i>
                 </button>
-            </div>
-            <div class="right-tools">
                 <button class="tool-btn" id="searchBtn">
                     <i class="material-icons">search</i>
                 </button>
-                <button class="tool-btn" id="editBtn">
-                    <i class="material-icons">edit</i>
+                <button class="tool-btn" id="fullscreenBtn">
+                    <i class="material-icons">fullscreen</i>
                 </button>
-                <button class="tool-btn" id="moreBtn">
-                    <i class="material-icons">more_vert</i>
-                </button>
+                <span id="filename"></span>
+            </div>
+
+            <div class="editor-section">
+                <div class="line-numbers"></div>
+                <textarea id="editor" spellcheck="false"></textarea>
+
+                <div id="searchBox" class="search-box hidden">
+                    <input type="text" id="searchInput" placeholder="Search...">
+                    <button class="tool-btn" id="prevMatch">
+                        <i class="material-icons">keyboard_arrow_up</i>
+                    </button>
+                    <button class="tool-btn" id="nextMatch">
+                        <i class="material-icons">keyboard_arrow_down</i>
+                    </button>
+                    <button class="tool-btn" id="closeSearch">
+                        <i class="material-icons">close</i>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="file-info">
-            <span id="filename">*church-knowledge.txt</span>
-            <span class="file-meta">8:2 UTF-8</span>
-        </div>
-        <div class="editor-container">
-            <div class="line-numbers"></div>
-            <textarea id="editor" spellcheck="false"></textarea>
-        </div>
+
+        <div id="saveStatus" class="save-status"></div>
     </div>
-    <div id="searchBox" class="search-box hidden">
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button id="prevMatch"><i class="material-icons">keyboard_arrow_up</i></button>
-        <button id="nextMatch"><i class="material-icons">keyboard_arrow_down</i></button>
-        <button id="closeSearch"><i class="material-icons">close</i></button>
-    </div>
+
+    <script type="module" src="admin.js"></script>
 </body>
 </html>

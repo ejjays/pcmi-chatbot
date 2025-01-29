@@ -1,133 +1,173 @@
-/* admin-styles.css */
 :root {
-    --bg-color: #1e1e1e;
-    --text-color: #d4d4d4;
-    --toolbar-bg: #2d2d2d;
-    --line-number-color: #858585;
-    --active-line-bg: #282828;
-}
+            --toolbar-bg: #2c2c2c;
+            --editor-bg: #1e1e1e;
+            --text-color: #d4d4d4;
+            --line-number-color: #858585;
+            --active-btn: #404040;
+            --hover-btn: #3a3a3a;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Consolas', monospace;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    height: 100vh;
-    overflow: hidden;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+        }
 
-.editor-view {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-.toolbar {
-    background-color: var(--toolbar-bg);
-    padding: 8px;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #404040;
-}
+        /* Document List View */
+        .document-list {
+            padding: 20px;
+        }
 
-.left-tools, .right-tools {
-    display: flex;
-    gap: 4px;
-}
+        .doc-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-.tool-btn {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    padding: 4px;
-    cursor: pointer;
-    border-radius: 4px;
-}
+        .doc-btn {
+            background-color: var(--toolbar-bg);
+            border: none;
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-.tool-btn:hover {
-    background-color: #404040;
-}
+        .doc-btn:hover {
+            background-color: var(--hover-btn);
+        }
 
-.file-info {
-    background-color: var(--bg-color);
-    padding: 8px 16px;
-    font-size: 14px;
-    color: var(--text-color);
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #404040;
-}
+        .doc-btn.active {
+            background-color: var(--active-btn);
+        }
 
-.file-meta {
-    color: var(--line-number-color);
-}
+        /* Editor View */
+        .editor-view {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-.editor-container {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-}
+        .toolbar {
+            background-color: var(--toolbar-bg);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.line-numbers {
-    padding: 16px 8px;
-    background-color: var(--bg-color);
-    color: var(--line-number-color);
-    text-align: right;
-    user-select: none;
-    min-width: 40px;
-}
+        .tool-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-#editor {
-    flex: 1;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    border: none;
-    padding: 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    resize: none;
-    outline: none;
-}
+        .tool-btn:hover {
+            background-color: var(--hover-btn);
+        }
 
-.search-box {
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    background-color: var(--toolbar-bg);
-    padding: 8px;
-    border-radius: 4px;
-    display: flex;
-    gap: 4px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
+        .tool-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-.search-box.hidden {
-    display: none;
-}
+        .editor-section {
+            display: flex;
+            flex-grow: 1;
+            position: relative;
+            background-color: var(--editor-bg);
+        }
 
-#searchInput {
-    background-color: var(--bg-color);
-    border: 1px solid #404040;
-    color: var(--text-color);
-    padding: 4px 8px;
-    outline: none;
-}
+        .line-numbers {
+            padding: 10px;
+            background-color: var(--toolbar-bg);
+            color: var(--line-number-color);
+            text-align: right;
+            user-select: none;
+        }
 
-.search-box button {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-    padding: 4px;
-}
+        #editor {
+            flex-grow: 1;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            border: none;
+            padding: 10px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
 
-.search-box button:hover {
-    background-color: #404040;
-    border-radius: 4px;
-}
+        /* Search Box */
+        .search-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--toolbar-bg);
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .search-box.hidden {
+            display: none;
+        }
+
+        #searchInput {
+            background-color: var(--editor-bg);
+            border: 1px solid var(--line-number-color);
+            color: var(--text-color);
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .fullscreen-editor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        #filename {
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .save-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--toolbar-bg);
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .save-status:not(:empty) {
+            display: block;
+        }
+    
