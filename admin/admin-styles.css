@@ -98,14 +98,6 @@
             background-color: var(--editor-bg);
         }
 
-        .line-numbers {
-            padding: 10px;
-            background-color: var(--toolbar-bg);
-            color: var(--line-number-color);
-            text-align: right;
-            user-select: none;
-        }
-
         #editor {
             flex-grow: 1;
             background-color: var(--editor-bg);
@@ -151,12 +143,6 @@
             height: 100vh;
             z-index: 1000;
         }
-
-        #filename {
-            margin-left: 10px;
-            font-size: 14px;
-        }
-
         .save-status {
             position: fixed;
             bottom: 20px;
@@ -215,3 +201,5 @@
         padding: 10px;
     }
 }
+
+

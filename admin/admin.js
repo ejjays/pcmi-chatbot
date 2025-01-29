@@ -38,7 +38,6 @@ const editor = document.getElementById('editor');
 const saveBtn = document.getElementById('saveBtn');
 const resetBtn = document.getElementById('resetBtn');
 const saveStatus = document.getElementById('saveStatus');
-const lineNumbers = document.querySelector('.line-numbers');
 const searchBox = document.getElementById('searchBox');
 const searchInput = document.getElementById('searchInput');
 
@@ -72,16 +71,11 @@ async function loadDocuments() {
                     if (docSnap.exists()) {
                         originalContent = docSnap.data().content;
                         editor.value = originalContent;
-                        updateLineNumbers();
                         enableButtons();
                         
                         // Show editor view and hide document list
                         documentList.style.display = 'none';
                         editorView.style.display = 'flex';
-                        
-                        // Update filename display
-                        document.getElementById('filename').textContent = 
-                            `*${currentDoc}`;
                     }
                 } catch (error) {
                     console.error('Error loading document:', error);
@@ -94,18 +88,12 @@ async function loadDocuments() {
     }
 }
 
-// Line numbers
-function updateLineNumbers() {
-    const lines = editor.value.split('\n').length;
-    lineNumbers.innerHTML = Array(lines).fill(0).map((_, i) => `<div>${i + 1}</div>`).join('');
-}
-
 // Editor event listeners
 editor.addEventListener('input', () => {
     const hasChanges = editor.value !== originalContent;
     saveBtn.disabled = !hasChanges;
     resetBtn.disabled = !hasChanges;
-    updateLineNumbers();
+    
     
     // Add to undo stack
     undoStack.push(editor.value);
@@ -136,7 +124,6 @@ saveBtn.addEventListener('click', async () => {
 // Reset functionality
 resetBtn.addEventListener('click', () => {
     editor.value = originalContent;
-    updateLineNumbers();
     disableButtons();
 });
 
@@ -201,7 +188,6 @@ document.getElementById('undoBtn').addEventListener('click', () => {
     if (undoStack.length > 1) {
         redoStack.push(undoStack.pop());
         editor.value = undoStack[undoStack.length - 1];
-        updateLineNumbers();
     }
 });
 
@@ -210,31 +196,49 @@ document.getElementById('redoBtn').addEventListener('click', () => {
         const value = redoStack.pop();
         undoStack.push(value);
         editor.value = value;
-        updateLineNumbers();
     }
 });
 
-// Fullscreen functionality
-const fullscreenBtn = document.getElementById('fullscreenBtn');
-const editorSection = document.querySelector('.editor-section');
+// Remove the old fullscreen code and add this new code
 
-fullscreenBtn.addEventListener('click', () => {
-    editorSection.classList.toggle('fullscreen-editor');
-    const icon = fullscreenBtn.querySelector('.material-icons');
-    if (editorSection.classList.contains('fullscreen-editor')) {
-        icon.textContent = 'fullscreen_exit';
-    } else {
-        icon.textContent = 'fullscreen';
-    }
-});
+// Add a function to beautify the text
+function beautifyText() {
+    let text = editor.value;
+    
+    // Split into lines and remove empty lines at start and end
+    let lines = text.split('\n').filter(line => line.trim());
+    
+    // Process each line
+    lines = lines.map(line => {
+        // Trim whitespace
+        line = line.trim();
+        
+        // Add proper spacing after punctuation
+        line = line.replace(/([.,!?:;])(\S)/g, '$1 $2');
+        
+        // Remove multiple spaces
+        line = line.replace(/\s+/g, ' ');
+        
+        return line;
+    });
+    
+    // Join lines with proper spacing
+    text = lines.join('\n\n');
+    
+    // Update editor content
+    editor.value = text;
+    
+    // Add to undo stack
+    undoStack.push(editor.value);
+    redoStack = [];
+    
+    // Enable save button since content has changed
+    saveBtn.disabled = false;
+    resetBtn.disabled = false;
+}
 
-// Exit fullscreen with Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && editorSection.classList.contains('fullscreen-editor')) {
-        editorSection.classList.remove('fullscreen-editor');
-        fullscreenBtn.querySelector('.material-icons').textContent = 'fullscreen';
-    }
-});
+// Add event listener for beautify button
+document.getElementById('beautifyBtn').addEventListener('click', beautifyText);
 
 // Menu button (back to document list)
 document.getElementById('menuBtn').addEventListener('click', () => {
@@ -256,5 +260,4 @@ function disableButtons() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadDocuments();
-    updateLineNumbers();
 });
