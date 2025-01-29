@@ -7,6 +7,23 @@ let userIsScrolling = false;
 let areFollowUpsHidden = false; 
 let userMessage = null;
 let isResponseGenerating = false; 
+let isDataLoaded = false;
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+// Your Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDpFnEoKWRQG1fXXQ282hdwjGyLCtAYWuM",
+    authDomain: "pcmi---chatbot-abfd0.firebaseapp.com",
+    projectId: "pcmi---chatbot-abfd0",
+    storageBucket: "pcmi---chatbot-abfd0.firebasestorage.app",
+    messagingSenderId: "162065597510",
+    appId: "1:162065597510:web:9c1759f6b59d2e2d9db647"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const loadInitialState = () => {
     areFollowUpsHidden = localStorage.getItem('hideFollowUps') === 'true';
@@ -32,19 +49,44 @@ const formatFacebookLinks = (response) => {
 };
 
 // Load Training-base
-Promise.all([
-  fetch('training-data/church-knowledge.txt').then(response => response.text()),
-  fetch('training-data/ai-rules.txt').then(response => response.text()),
-  fetch('training-data/link-format-rules.txt').then(response => response.text()),
-  fetch('training-data/conversation-flow.txt').then(response => response.text())
-])
-.then(([knowledge, rules, linkRules, flowRules]) => {
-  churchKnowledge = knowledge;
-  aiRules = rules;
-  linkFormatRules = linkRules;
-  conversationFlowRules = flowRules;
-})
-.catch(error => console.error('Error loading files:', error));
+const loadTrainingData = async () => {
+    try {
+        const [
+            churchKnowledgeDoc,
+            aiRulesDoc,
+            linkFormatRulesDoc,
+            conversationFlowDoc
+        ] = await Promise.all([
+            getDoc(doc(db, 'training-data', 'church-knowledge')),
+            getDoc(doc(db, 'training-data', 'ai-rules')),
+            getDoc(doc(db, 'training-data', 'link-format-rules')),
+            getDoc(doc(db, 'training-data', 'conversation-flow'))
+        ]);
+
+        // Check if documents exist
+        if (!churchKnowledgeDoc.exists() || 
+            !aiRulesDoc.exists() || 
+            !linkFormatRulesDoc.exists() || 
+            !conversationFlowDoc.exists()) {
+            throw new Error("Some training data documents are missing");
+        }
+
+        // Assign data
+        churchKnowledge = churchKnowledgeDoc.data().content;
+        aiRules = aiRulesDoc.data().content;
+        linkFormatRules = linkFormatRulesDoc.data().content;
+        conversationFlowRules = conversationFlowDoc.data().content;
+
+       isDataLoaded = true;
+        console.log('Training data loaded successfully');
+    } catch (error) {
+        console.error('Error loading training data:', error);
+        // Add user-facing error handling
+    }
+};
+
+// Call it immediately
+loadTrainingData();
 
 const typingForm = document.querySelector(".typing-form");
 const chatContainer = document.querySelector(".chat-list");
@@ -85,144 +127,156 @@ const createMessageElement = (content, ...classes) => {
   return div;
 }
 
+const customInitialFollowUps = {
+    "What time does Sunday service starts?": [
+        "What should I wear?",
+        "What do I need to bring?",
+        "Do you have parking space?",
+        "Is there service pick-up every Sunday?"
+    ],
+    "Where is your church located?": [
+        "What are your church's core beliefs?",
+        "Tell me about your services",
+        "Do you have online services or resources?",
+        "Do you have any contact details?"
+    ],
+    "What is Intentional Discipleship?": [
+        "Do I need to sign up to join?",
+        "Is there any requirements?",
+        "What time id usually ends?",
+        "Are there any fees or cost involved?"
+    ],
+    "When is the next Youth Fellowship?": [
+        "What activities do you have in Youth Fellowship?",
+        "What age group can join?",
+        "How long does it usually last?",
+        "Do I need to bring anything?"
+    ]
+};
+
 const displaySuggestions = async (messageDiv, aiResponse) => {
-    
     if (isResponseGenerating) return;
 
-     const existingSuggestions = messageDiv.querySelector(".suggestions-container");
+    const existingSuggestions = messageDiv.querySelector(".suggestions-container");
     if (existingSuggestions) {
         existingSuggestions.remove();
     }
 
-    // Follow-ups Suggestions Rules
-    const suggestionsPrompt = `Based on the specific topic and context of your previous response: "${aiResponse}",
-        generate exactly 4 natural follow-up questions that:
-        1. Directly relate to the main topic just discussed
-        2. Follow a logical progression of the conversation
-        3. Help users explore different aspects of the same topic
-        4. Stay within the context of the current discussion
-        5. Just keep it simple and straightforward.
-        6. Always provide suggestions based on the user's language input. 
-        7. When providing suggestions imagine you are the actual user that will ask questions.
-        
-    ### IMPORTANT: Always make the suggestions in lowest basic language version, short simple but consice.
+    let suggestions = [];
+    if (customInitialFollowUps.hasOwnProperty(userMessage)) {
+        // Use custom follow-ups for initial suggestions
+        suggestions = customInitialFollowUps[userMessage];
+    } else {
+        // Follow-ups Suggestions Rules
+        const suggestionsPrompt = `Based on the specific topic and context of your previous response: "${aiResponse}",
+            generate exactly 4 natural follow-up questions that:
+            1. Directly relate to the main topic just discussed
+            2. Follow a logical progression of the conversation
+            3. Help users explore different aspects of the same topic
+            4. Stay within the context of the current discussion
+            5. Just keep it short, simple and straightforward.
+            6. Always provide suggestions based on the user's language input. 
+            7. When providing suggestions imagine you are the actual user that will ask questions.
+            
+        ### IMPORTANT: Always make the suggestions in lowest basic language version, straightforward, very short simple but concise.
 
-        Additional rules:
-        - Questions must be directly related to the previous response
-        - Focus on the specific subject matter being discussed
-        - Maintain conversation continuity
-        - Avoid generic or unrelated topics
-        - Use the church knowledge base "${churchKnowledge}" only when contextually relevant, and if the user question is non-church related just focus on it don't force church related suggestions.
-        - Keep questions conversational and natural
-        - Instead of saying saying the full name of our church "Pag-ibig Christian Ministries Infanta", you can use the word "your church" to make it simple and concise.
+            Additional rules:
+            - Questions must be directly related to the previous response
+            - Focus on the specific subject matter being discussed
+            - Maintain conversation continuity
+            - Avoid generic or unrelated topics
+            - Use the church knowledge base "${churchKnowledge}" only when contextually relevant
+            - Keep questions conversational and natural
  
-        Return only the questions, separated by |`;
-    
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{
-                    role: "user",
-                    parts: [{ text: suggestionsPrompt }]
-                }]
-            })
-        });
+            Return only the questions, separated by |`;
 
-        const data = await response.json();
-        const suggestions = data.candidates[0].content.parts[0].text.split("|");
-        
-        let apiResponse = data.candidates[0].content.parts[0].text;
-    
-    // Format links before other formatting
-    apiResponse = formatFacebookLinks(apiResponse);
-    
-    // Apply other existing formatting
-    apiResponse = apiResponse
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^\*(.*)/gm, '<strong>■ ⁠ </strong>⁠$1') 
-      .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{
+                        role: "user",
+                        parts: [{ text: suggestionsPrompt }]
+                    }]
+                })
+            });
 
-        
-        // Only create and append suggestions container after response is complete
-        const suggestionsContainer = document.createElement("div");
-suggestionsContainer.classList.add("suggestions-container");
-suggestionsContainer.innerHTML = `
-    <div class="suggestions-header">
-        <h4 class="suggestions-title">Follow-ups:</h4>
-        <div class="suggestions-options">
-            <span class="three-dots material-symbols-rounded">cancel</span>
-            <div class="options-dropdown">
-                <div class="option-item">Hide</div>
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            suggestions = data.candidates[0].content.parts[0].text.split("|");
+        } catch (error) {
+            console.error("Error generating suggestions:", error);
+            return; // Optionally provide user feedback here
+        }
+    }
+
+    const suggestionsContainer = document.createElement("div");
+    suggestionsContainer.classList.add("suggestions-container");
+    suggestionsContainer.innerHTML = `
+        <div class="suggestions-header">
+            <h4 class="suggestions-title">Follow-ups:</h4>
+            <div class="suggestions-options">
+                <span class="three-dots material-symbols-rounded">cancel</span>
+                <div class="options-dropdown">
+                    <div class="option-item">Hide</div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="suggestions-list">
-        ${suggestions.map(suggestion => `
-            <div class="suggestion-item">
-                <p class="suggestion-text">${suggestion.trim()}</p>
-            </div>
-        `).join('<div class="suggestion-separator"></div>')}
-    </div>
-`;
-        
-        messageDiv.appendChild(suggestionsContainer);
-        
-// After creating the suggestions container
-// After creating the suggestions container
-const threeDots = suggestionsContainer.querySelector('.three-dots');
-const optionsDropdown = suggestionsContainer.querySelector('.options-dropdown');
+        <div class="suggestions-list">
+            ${suggestions.map(suggestion => `
+                <div class="suggestion-item">
+                    <p class="suggestion-text">${suggestion.trim()}</p>
+                </div>
+            `).join('<div class="suggestion-separator"></div>')}
+        </div>
+    `;
 
-threeDots.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const suggestionsContainer = e.target.closest('.suggestions-container');
-    const messageDiv = suggestionsContainer.closest('.message');
-    
-    // Hiding class for animation
-    suggestionsContainer.classList.add('hiding');
-    
-    // Wait for animation to complete before setting display none
-    setTimeout(() => {
-        suggestionsContainer.style.display = 'none';
-        localStorage.setItem('hideFollowUps', 'true');
-        areFollowUpsHidden = true;
-        
-        // Show menu icon message
-        const menuIcon = messageDiv.querySelector('.menu-icon');
-        if (menuIcon) {
-            menuIcon.style.display = 'inline-flex';
-        }
-        
-        // Show menu icons for all messages
-        document.querySelectorAll('.message .menu-icon').forEach(icon => {
-            icon.style.display = 'inline-flex';
-        });
-    }, 400);
-});
+    messageDiv.appendChild(suggestionsContainer);
 
-// Close dropdown when clicking outside
-document.addEventListener('click', () => {
-    optionsDropdown.classList.remove('show');
-});
-
-        // Click handlers
-        messageDiv.querySelectorAll(".suggestion-item").forEach(item => {
-            item.addEventListener("click", () => {
-                const text = item.querySelector(".suggestion-text").textContent;
-                document.querySelector(".typing-input").value = text;
-                
-                document.querySelectorAll(".suggestions-container").forEach(container => {
-                    container.remove();
-                });
-                
-                document.querySelector("#send-message-button").click();
+    // Add event listeners
+    const threeDots = suggestionsContainer.querySelector('.three-dots');
+    threeDots.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const suggestionsContainer = e.target.closest('.suggestions-container');
+        const messageDiv = suggestionsContainer.closest('.message');
+        
+        suggestionsContainer.classList.add('hiding');
+        
+        setTimeout(() => {
+            suggestionsContainer.style.display = 'none';
+            localStorage.setItem('hideFollowUps', 'true');
+            areFollowUpsHidden = true;
+            
+            const menuIcon = messageDiv.querySelector('.menu-icon');
+            if (menuIcon) {
+                menuIcon.style.display = 'inline-flex';
+            }
+            
+            document.querySelectorAll('.message .menu-icon').forEach(icon => {
+                icon.style.display = 'inline-flex';
             });
+        }, 400);
+    });
+
+    // Click handlers for suggestions
+    messageDiv.querySelectorAll(".suggestion-item").forEach(item => {
+        item.addEventListener("click", () => {
+            const text = item.querySelector(".suggestion-text").textContent;
+            document.querySelector(".typing-input").value = text;
+            
+            document.querySelectorAll(".suggestions-container").forEach(container => {
+                container.remove();
+            });
+            
+            document.querySelector("#send-message-button").click();
         });
-    } catch (error) {
-        console.error("Error generating suggestions:", error);
-    }
-}
+    });
+};
+
 
 // Show typing effect by displaying words one by one
 const showTypingEffect = (text, textElement, incomingMessageDiv) => {
@@ -279,7 +333,7 @@ chatContainer.addEventListener('scroll', () => {
     chatContainer.scrollTimeout = setTimeout(() => {
         userIsScrolling = false;
     }, 1000);
-});
+}, { passive: true });
 
 
 
@@ -336,6 +390,11 @@ const isInappropriateContent = (message) => {
 const generateAPIResponse = async (incomingMessageDiv) => {
     const textElement = incomingMessageDiv.querySelector(".text");
     
+    if (!isDataLoaded) {
+        textElement.textContent = "Still loading training data, please wait...";
+        return;
+    }
+    
     // Check inappropriate content
     if (isInappropriateContent(userMessage)) {
         textElement.textContent = "I'm sorry, I can't answer that.";
@@ -386,14 +445,12 @@ const generateAPIResponse = async (incomingMessageDiv) => {
   Current Date and Time in Philippines: ${getPhilippinesTime()}
   
 ### ALWAYS SIMPLE LANGUAGE:
-You should always answer using simple, easy-to-understand language. Avoid complex vocabulary and sentence structures to ensure users can easily understand your responses. (If not english languagr always be in casual informal and informal approach).
-
+You should always answer using simple very basic language, easy-to-understand language. Avoid complex vocabulary and sentence structures to ensure users can easily understand your responses. (If not english language always be in casual informal and informal approach).
   
-  1. **GREETING APPROACH:**
+  1. **GREETING RESPONSE:**
   STRICT NOTE : DO NOT EVER MENTION THE WORD "HEY THERE" AS YOUR GREETING RESPONSE. JUST TO THESE: 
-   - Make initial responses directly relevant to the user's question/message
-   - Let the conversation flow from the user's input
-   - Make it always cheerful and friendly, positively exaggerated.
+   - Always include a greeting response in your every answers. but make it always cheerful and friendly, positively exaggerated BUT STILL MAKE SURE YOUR GREETING is directly relevant/connected to the user's question/message.
+   - Let the conversation flow from the user's input.
    - You can use [emoji] but still depending on the user message.
    - Have empathy if neccessary.
 
@@ -402,7 +459,7 @@ You should always answer using simple, easy-to-understand language. Avoid comple
 - Don't add greetings that aren't connected to the user's message.
 
   
-### **intensional Discipleship Details**: Intentional Discipleship: Intentional Discipleship is a school of leaders that covers deep topics to EQUIP our future leaders. This teaches discipline, deep Bible study, and  step-by-step instruction in personal evangelism. It also guide participants through deep teachings discussions and after they completed the 6 stages class, they are now be prepared for practical applications to WIN SOULS.
+### **intensional Discipleship Details**: Intentional Discipleship: Intentional Discipleship is a school of leaders that covers deep topics to EQUIP our leaders and future leaders. This teaches discipline, deep Bible study, and  step-by-step instruction in personal evangelism. It also guide participants through deep teachings discussions and after they completed the 6 stages class, they are now be prepared for practical applications to WIN SOULS.
 It is led by experienced church member (Pastor Edong and his wife Sis. Camil).
 
 ### — It's all about Jesus!: When user asked about Intentional Discipleship always mention the word "— It's all about Jesus!" at the end of your response. Make sure to add appropriate emoji like "— It's all about Jesus! [Your emoji]." Take note: (Only include — It's all about Jesus, only in this PERFECTLY EXACT QUESTION: "What is Intensional Discipleship") Use that phrase only if they asked ABOUT intentional Discipleship Related and if not dont use it. (also STRICTLY don't mention that "— It's all about Jesus!" ALWAYS in every FOLLOW UP QUESTIONS!)
@@ -518,6 +575,8 @@ If a user asks about non-church-related topics and it’s relevant to the conver
 - ALWAYS Use conversation history to provide more relevant responses to the current user question.
 
 ### Peoples Links: When mentioning our peoples always include at the end their facebook link if its ONLY included in your database. USE THIS FORMAT : "You can find [him/her] on Facebook: <a href="[facebook-url]" target="_blank" rel="noopener noreferrer">[Person's Name]</a>". NOTE: If the Facebook link of the people that is not listed on Facebook links in your database Do not use this format: "You can find [him/her] on Facebook: <a href="[facebook-url]" target="_blank" rel="noopener noreferrer">[Person's Name]</a>. Only use that format if that specific people's Facbook link is listed on your database. If the user asked about a facebook link of an specific people that, that people facebook link is not listed in your database include to say you dont have an information of that facebook link in your database... something like that.
+
+### What to wear during sunday service?: [Your Greeting response [emoji]] ... We No dress code, ... anything comftable, ... just try to avoid too revealing. (Make this friendly detailed).
 
   PRIORITY - CONVERSATION FLOW RULES:
   ${conversationFlowRules}
@@ -822,7 +881,6 @@ typingInput.addEventListener("input", () => {
 // Simplified event listeners
 let windowHeight = window.innerHeight;
 window.addEventListener('resize', () => {
-  // Only collapse if the keyboard is actually hiding (height increasing)
   if (window.innerHeight > windowHeight) {
     if (typingInput.value.length === 0) {
       inputWrapper.classList.remove("expanded");
@@ -830,7 +888,7 @@ window.addEventListener('resize', () => {
     }
   }
   windowHeight = window.innerHeight;
-});
+}, { passive: true });
 
 // Only handle back button
 window.addEventListener('popstate', (e) => {
@@ -842,6 +900,5 @@ window.addEventListener('popstate', (e) => {
 if (window.navigator.userAgent.match(/Android/i)) {
   document.addEventListener('backbutton', (e) => {
     e.preventDefault();
-  }, false);
+  }, { passive: true });
 }
-
