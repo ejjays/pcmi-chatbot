@@ -170,4 +170,48 @@
         .save-status:not(:empty) {
             display: block;
         }
-    
+        
+ /* Remove unwanted spaces on mobile */
+@media screen and (max-width: 768px) {
+    /* Remove container padding on mobile */
+    .container {
+        padding: 0;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    /* Make editor view truly full-width */
+    .editor-view {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Adjust toolbar to be edge-to-edge */
+    .toolbar {
+        width: 100%;
+        margin: 0;
+        padding: 8px 4px;
+        border-radius: 0;
+    }
+
+    /* Make editor section full-width */
+    .editor-section {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    /* Adjust document list view for mobile */
+    .document-list {
+        padding: 10px;
+        width: 100%;
+    }
+
+    /* Make sure the editor takes full width */
+    #editor {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+    }
+}
