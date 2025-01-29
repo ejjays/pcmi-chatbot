@@ -1,0 +1,100 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    margin-bottom: 30px;
+}
+
+.editor-container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 20px;
+    height: calc(100vh - 150px);
+}
+
+.document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.doc-btn {
+    padding: 10px;
+    border: none;
+    background: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.doc-btn:hover {
+    background: #e0e0e0;
+}
+
+.doc-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+.editor-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#editor {
+    flex-grow: 1;
+    padding: 15px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#saveBtn {
+    background: #28a745;
+    color: white;
+}
+
+#saveBtn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+#resetBtn {
+    background: #dc3545;
+    color: white;
+}
+
+#resetBtn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+#saveStatus {
+    height: 20px;
+    color: #28a745;
+}
