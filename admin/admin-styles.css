@@ -143,19 +143,33 @@
             height: 100vh;
             z-index: 1000;
         }
-        .save-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--toolbar-bg);
-            padding: 8px 16px;
-            border-radius: 4px;
-            display: none;
-        }
+     .save-status {
+    padding: 8px;
+    margin-left: 10px;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
 
-        .save-status:not(:empty) {
-            display: block;
-        }
+.success-message {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+}
+
+.error-message {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+.fade-out {
+    opacity: 0;
+}
         
  /* Remove unwanted spaces on mobile */
 @media screen and (max-width: 768px) {
