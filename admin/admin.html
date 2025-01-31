@@ -4,61 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCMI Admin - Training Data Editor</title>
-    <link rel="stylesheet" href="admin.css">
+    <!-- Link the admin-styles.css file -->
+    <link rel="stylesheet" href="admin-styles.css">
+    <!-- Add Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
-    <!-- Document List Section -->
-    <div id="documentList">
-        <h2>Training Documents</h2>
-        <div class="doc-buttons"></div>
-    </div>
-
-    <!-- Editor View Section -->
-    <div id="editorView" style="display: none;">
-        <!-- Editor Controls -->
-        <div class="editor-controls">
-            <button id="menuBtn" class="control-btn">
-                <span class="material-symbols-rounded">menu</span>
-            </button>
-            <button id="undoBtn" class="control-btn">
-                <span class="material-symbols-rounded">undo</span>
-            </button>
-            <button id="redoBtn" class="control-btn">
-                <span class="material-symbols-rounded">redo</span>
-            </button>
-            <button id="searchBtn" class="control-btn">
-                <span class="material-symbols-rounded">search</span>
-            </button>
-            <button id="beautifyBtn" class="control-btn">
-                <span class="material-symbols-rounded">format_align_left</span>
-            </button>
+    <div class="container">
+        <!-- Document List View -->
+        <div id="documentList" class="document-list">
+            <h2>Training Documents</h2>
+            <div class="doc-buttons"></div>
         </div>
 
-        <!-- Search Box -->
-        <div id="searchBox" class="hidden">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search...">
-                <button id="prevMatch">
-                    <span class="material-symbols-rounded">arrow_upward</span>
-                </button>
-                <button id="nextMatch">
-                    <span class="material-symbols-rounded">arrow_downward</span>
-                </button>
-                <button id="closeSearch">
-                    <span class="material-symbols-rounded">close</span>
-                </button>
+        <!-- Editor View -->
+        <div id="editorView" class="editor-view">
+            <div class="toolbar">
+                <button id="menuBtn" class="tool-btn material-symbols-rounded">menu</button>
+                <button id="undoBtn" class="tool-btn material-symbols-rounded">undo</button>
+                <button id="redoBtn" class="tool-btn material-symbols-rounded">redo</button>
+                <button id="searchBtn" class="tool-btn material-symbols-rounded">search</button>
+                <button id="beautifyBtn" class="tool-btn material-symbols-rounded">format_align_left</button>
             </div>
-        </div>
+            
+            <div class="editor-section">
+                <textarea id="editor"></textarea>
+                
+                <!-- Search Box -->
+                <div id="searchBox" class="search-box hidden">
+                    <input type="text" id="searchInput" placeholder="Search...">
+                    <button id="prevMatch" class="tool-btn material-symbols-rounded">arrow_upward</button>
+                    <button id="nextMatch" class="tool-btn material-symbols-rounded">arrow_downward</button>
+                    <button id="closeSearch" class="tool-btn material-symbols-rounded">close</button>
+                </div>
+            </div>
 
-        <!-- Editor Area -->
-        <textarea id="editor"></textarea>
-
-        <!-- Save Controls -->
-        <div class="save-controls">
-            <button id="saveBtn" disabled>Save Changes</button>
-            <button id="resetBtn" disabled>Reset</button>
-            <div id="saveStatus"></div>
+            <div class="toolbar">
+                <button id="saveBtn" class="tool-btn" disabled>Save Changes</button>
+                <button id="resetBtn" class="tool-btn" disabled>Reset</button>
+                <div id="saveStatus" class="save-status"></div>
+            </div>
         </div>
     </div>
 
