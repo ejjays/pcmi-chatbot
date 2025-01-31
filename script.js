@@ -345,7 +345,7 @@ const createMessageWithMedia = (text, mediaPath) => {
      </video>` : 
     `<img class="response-image" src="${mediaPath}" alt="Church media">`;
 
-  return `<div class="message-content">
+  const messageContent = `<div class="message-content">
     <div class="header-row">
       <div class="avatar-container">
         <img class="avatar default-avatar" src="images/avatars/pcmi-bot.png" alt="Bot avatar">
@@ -357,12 +357,26 @@ const createMessageWithMedia = (text, mediaPath) => {
       ${mediaElement}
       <p class="text">${text}</p>
       <div class="message-actions">
-        <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-        <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
+        <span class="icon material-symbols-rounded">content_copy</span>
+        <span class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
       </div>
     </div>
   </div>`;
-};
+
+  const messageElement = createMessageElement(messageContent, "incoming");
+  
+  // Add event listeners after creating the element
+  const messageActions = messageElement.querySelector('.message-actions');
+  if (messageActions) {
+    const copyButton = messageActions.querySelector('.icon');
+    const menuButton = messageActions.querySelector('.menu-icon');
+    
+    copyButton.addEventListener('click', () => copyMessage(copyButton));
+    menuButton.addEventListener('click', () => toggleFollowUps(menuButton));
+  }
+
+  return messageElement;
+}
 
 const getCustomErrorMessage = (error) => {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
@@ -630,45 +644,51 @@ const formattedResponse = formatFacebookLinks(apiResponse)
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
 
     if (isLocationQuery) {
-      incomingMessageDiv.innerHTML = createMessageWithMedia(apiResponse, '/images/services/church-location.png');
-      const newTextElement = incomingMessageDiv.querySelector(".text");
-      newTextElement.textContent = ''; 
-      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-    } 
-    else if (isYouthQuery) {
-      incomingMessageDiv.innerHTML = createMessageWithMedia(apiResponse, '/images/services/youth-fellowship.jpg');
-      const newTextElement = incomingMessageDiv.querySelector(".text");
-      newTextElement.textContent = ''; 
-      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-    }
-    else if (isCellGroupQuery) {
-      incomingMessageDiv.innerHTML = createMessageWithMedia(apiResponse, '/images/services/cellgroup.jpg');
-      const newTextElement = incomingMessageDiv.querySelector(".text");
-      newTextElement.textContent = ''; 
-      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-    }
-    else if (isSundayServiceQuery) {
-  incomingMessageDiv.innerHTML = createMessageWithMedia(apiResponse, '/images/services/sunday-service.gif');
-  const newTextElement = incomingMessageDiv.querySelector(".text");
+  const messageElement = createMessageWithMedia(apiResponse, '/images/services/church-location.png');
+  incomingMessageDiv.replaceWith(messageElement);
+  const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-}
-    else if (isDiscipleshipQuery) {
-      incomingMessageDiv.innerHTML = createMessageWithMedia(apiResponse, '/images/services/discipleship.jpg');
-      const newTextElement = incomingMessageDiv.querySelector(".text");
-      newTextElement.textContent = ''; 
-      showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
-    }
-    else if (isPrayerWarriorQuery) {
-  incomingMessageDiv.innerHTML = createMessageWithMedia(apiResponse, '/images/services/prayer-warrior.jpg');
-  const newTextElement = incomingMessageDiv.querySelector(".text");
+  showTypingEffect(apiResponse, newTextElement, messageElement);
+} 
+else if (isYouthQuery) {
+  const messageElement = createMessageWithMedia(apiResponse, '/images/services/youth-fellowship.jpg');
+  incomingMessageDiv.replaceWith(messageElement);
+  const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, incomingMessageDiv);
+  showTypingEffect(apiResponse, newTextElement, messageElement);
 }
-    else {
-      textElement.textContent = '';
-      showTypingEffect(apiResponse, textElement, incomingMessageDiv);
-    }
+else if (isCellGroupQuery) {
+  const messageElement = createMessageWithMedia(apiResponse, '/images/services/cellgroup.jpg');
+  incomingMessageDiv.replaceWith(messageElement);
+  const newTextElement = messageElement.querySelector(".text");
+  newTextElement.textContent = ''; 
+  showTypingEffect(apiResponse, newTextElement, messageElement);
+}
+else if (isSundayServiceQuery) {
+  const messageElement = createMessageWithMedia(apiResponse, '/images/services/sunday-service.gif');
+  incomingMessageDiv.replaceWith(messageElement);
+  const newTextElement = messageElement.querySelector(".text");
+  newTextElement.textContent = ''; 
+  showTypingEffect(apiResponse, newTextElement, messageElement);
+}
+else if (isDiscipleshipQuery) {
+  const messageElement = createMessageWithMedia(apiResponse, '/images/services/discipleship.jpg');
+  incomingMessageDiv.replaceWith(messageElement);
+  const newTextElement = messageElement.querySelector(".text");
+  newTextElement.textContent = ''; 
+  showTypingEffect(apiResponse, newTextElement, messageElement);
+}
+else if (isPrayerWarriorQuery) {
+  const messageElement = createMessageWithMedia(apiResponse, '/images/services/prayer-warrior.jpg');
+  incomingMessageDiv.replaceWith(messageElement);
+  const newTextElement = messageElement.querySelector(".text");
+  newTextElement.textContent = ''; 
+  showTypingEffect(apiResponse, newTextElement, messageElement);
+}
+else {
+  textElement.textContent = '';
+  showTypingEffect(apiResponse, textElement, incomingMessageDiv);
+}
             
 
   } catch (error) {
@@ -705,12 +725,22 @@ const showLoadingAnimation = () => {
                       <div class="loading-bar"></div>
                     </div>
                     <div class="message-actions">
-                      <span onClick="copyMessage(this)" class="icon material-symbols-rounded">content_copy</span>
-                      <span onClick="toggleFollowUps(this)" class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
-                    </div>
+    <span class="icon material-symbols-rounded">content_copy</span>
+    <span class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
+  </div>
                   </div>
                 </div>`;
-  const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
+const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
+  
+  const messageActions = incomingMessageDiv.querySelector('.message-actions');
+  if (messageActions) {
+    const copyButton = messageActions.querySelector('.icon');
+    const menuButton = messageActions.querySelector('.menu-icon');
+    
+    copyButton.addEventListener('click', () => copyMessage(copyButton));
+    menuButton.addEventListener('click', () => toggleFollowUps(menuButton));
+  }
+
   chatContainer.appendChild(incomingMessageDiv);
   chatContainer.scrollTo(0, chatContainer.scrollHeight);
   generateAPIResponse(incomingMessageDiv);
@@ -736,7 +766,7 @@ const toggleFollowUps = async (menuButton) => {
     if (isResponseGenerating) return;
 
     try {
-        // Remove any existing suggestions first
+        
         const existingSuggestions = messageDiv.querySelector('.suggestions-container');
         if (existingSuggestions) {
             existingSuggestions.remove();
@@ -757,6 +787,9 @@ const toggleFollowUps = async (menuButton) => {
         menuButton.style.display = 'inline-flex';
     }
 };
+
+window.copyMessage = copyMessage;
+   window.toggleFollowUps = toggleFollowUps;
 
 const hideFollowUps = (suggestionsContainer) => {
     const messageDiv = suggestionsContainer.closest('.message');
