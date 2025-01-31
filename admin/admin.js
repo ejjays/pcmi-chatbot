@@ -179,30 +179,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Save functionality
     saveBtn.addEventListener('click', async () => {
-        console.group('💾 Saving Document Changes');
-        try {
-            const docRef = doc(db, 'training-data', currentDoc);
-            console.log('🔄 Updating document:', currentDoc);
-            
-            await updateDoc(docRef, {
-                content: editor.value
-            });
-            
-            originalContent = editor.value;
-            saveStatus.textContent = 'Changes saved successfully!';
-            console.log('✅ Document saved successfully');
-            disableButtons();
-            
-            setTimeout(() => {
-                saveStatus.textContent = '';
-            }, 3000);
-        } catch (error) {
-            console.error('❌ Error saving document:', error);
-            console.error('Stack trace:', error.stack);
-            saveStatus.textContent = 'Error saving changes';
-        }
-        console.groupEnd();
-    });
+    console.group('💾 Saving Document Changes');
+    try {
+        const docRef = doc(db, 'training-data', currentDoc);
+        console.log('🔄 Updating document:', currentDoc);
+        
+        await updateDoc(docRef, {
+            content: editor.value
+        });
+        
+        originalContent = editor.value;
+        saveStatus.textContent = '✅ Changes saved successfully!';
+        saveStatus.className = 'save-status success-message';
+        console.log('✅ Document saved successfully');
+        disableButtons();
+        
+        setTimeout(() => {
+            saveStatus.className = 'save-status';
+        }, 3000);
+    } catch (error) {
+        console.error('❌ Error saving document:', error);
+        console.error('Stack trace:', error.stack);
+        saveStatus.textContent = '✕ Failed to save changes';
+        saveStatus.className = 'save-status error-message';
+    }
+    console.groupEnd();
+});
 
     // Reset functionality
     resetBtn.addEventListener('click', () => {

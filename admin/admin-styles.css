@@ -143,28 +143,36 @@
             height: 100vh;
             z-index: 1000;
         }
-     .save-status {
-    padding: 8px;
-    margin-left: 10px;
-    display: inline-block;
+   .save-status {
+    visibility: hidden;
+    min-width: 250px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px 25px;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
     font-size: 14px;
     font-weight: 500;
-    opacity: 1;
-    transition: opacity 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
 .success-message {
-    color: #155724;
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
+    visibility: visible;
+    opacity: 1;
+    background: #2ecc71;
 }
 
 .error-message {
-    color: #721c24;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
+    visibility: visible;
+    opacity: 1;
+    background: #e74c3c;
 }
 
 .fade-out {
