@@ -3,63 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training Data Editor</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="admin-styles.css">
+    <title>PCMI Admin - Training Data Editor</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
-    <div class="container">
-        <!-- Document List View -->
-        <div id="documentList" class="document-list">
-            <h2>Training Data Documents</h2>
-            <div class="doc-buttons"></div>
+    <!-- Document List Section -->
+    <div id="documentList">
+        <h2>Training Documents</h2>
+        <div class="doc-buttons"></div>
+    </div>
+
+    <!-- Editor View Section -->
+    <div id="editorView" style="display: none;">
+        <!-- Editor Controls -->
+        <div class="editor-controls">
+            <button id="menuBtn" class="control-btn">
+                <span class="material-symbols-rounded">menu</span>
+            </button>
+            <button id="undoBtn" class="control-btn">
+                <span class="material-symbols-rounded">undo</span>
+            </button>
+            <button id="redoBtn" class="control-btn">
+                <span class="material-symbols-rounded">redo</span>
+            </button>
+            <button id="searchBtn" class="control-btn">
+                <span class="material-symbols-rounded">search</span>
+            </button>
+            <button id="beautifyBtn" class="control-btn">
+                <span class="material-symbols-rounded">format_align_left</span>
+            </button>
         </div>
 
-        <!-- Editor View -->
-        <div id="editorView" class="editor-view">
-            <div class="toolbar">
-                <button class="tool-btn" id="menuBtn">
-                    <i class="material-icons">menu</i>
+        <!-- Search Box -->
+        <div id="searchBox" class="hidden">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button id="prevMatch">
+                    <span class="material-symbols-rounded">arrow_upward</span>
                 </button>
-                <button class="tool-btn" id="saveBtn" disabled>
-                    <i class="material-icons">save</i>
+                <button id="nextMatch">
+                    <span class="material-symbols-rounded">arrow_downward</span>
                 </button>
-                <button class="tool-btn" id="resetBtn" disabled>
-                     <i class="material-icons">restore</i>
+                <button id="closeSearch">
+                    <span class="material-symbols-rounded">close</span>
                 </button>
-                <button class="tool-btn" id="undoBtn">
-                    <i class="material-icons">undo</i>
-                </button>
-                <button class="tool-btn" id="redoBtn">
-                    <i class="material-icons">redo</i>
-                </button>
-                <button class="tool-btn" id="searchBtn">
-                    <i class="material-icons">search</i>
-                </button>
-                <button class="tool-btn" id="fullscreenBtn">
-                    <i class="material-icons">fullscreen</i>
-                </button>
-            </div>
-
-            <div class="editor-section">
-                <textarea id="editor" spellcheck="false"></textarea>
-
-                <div id="searchBox" class="search-box hidden">
-                    <input type="text" id="searchInput" placeholder="Search...">
-                    <button class="tool-btn" id="prevMatch">
-                        <i class="material-icons">keyboard_arrow_up</i>
-                    </button>
-                    <button class="tool-btn" id="nextMatch">
-                        <i class="material-icons">keyboard_arrow_down</i>
-                    </button>
-                    <button class="tool-btn" id="closeSearch">
-                        <i class="material-icons">close</i>
-                    </button>
-                </div>
             </div>
         </div>
 
-        <div id="saveStatus" class="save-status"></div>
+        <!-- Editor Area -->
+        <textarea id="editor"></textarea>
+
+        <!-- Save Controls -->
+        <div class="save-controls">
+            <button id="saveBtn" disabled>Save Changes</button>
+            <button id="resetBtn" disabled>Reset</button>
+            <div id="saveStatus"></div>
+        </div>
     </div>
 
     <script type="module" src="admin.js"></script>
