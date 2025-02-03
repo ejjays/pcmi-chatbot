@@ -12,7 +12,7 @@ let isDataLoaded = false;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-// Your Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDpFnEoKWRQG1fXXQ282hdwjGyLCtAYWuM",
     authDomain: "pcmi---chatbot-abfd0.firebaseapp.com",
@@ -174,11 +174,11 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
             2. Follow a logical progression of the conversation
             3. Help users explore different aspects of the same topic
             4. Stay within the context of the current discussion
-            5. Just keep it short, simple and straightforward.
+            5. Just keep it very short, simple and straightforward as POSSIBLE.
             6. Always provide suggestions based on the user's language input. 
             7. When providing suggestions imagine you are the actual user that will ask questions.
             
-        ### IMPORTANT: Always make the suggestions in lowest basic language version, straightforward, very short simple but concise.
+        ### IMPORTANT: Always make the suggestions in lowest basic language version, straightforward, VERY SHORT SIMPLE.
 
             Additional rules:
             - Questions must be directly related to the previous response
@@ -210,7 +210,7 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
             suggestions = data.candidates[0].content.parts[0].text.split("|");
         } catch (error) {
             console.error("Error generating suggestions:", error);
-            return; // Optionally provide user feedback here
+            return; 
         }
     }
 
@@ -365,7 +365,6 @@ const createMessageWithMedia = (text, mediaPath) => {
 
   const messageElement = createMessageElement(messageContent, "incoming");
   
-  // Add event listeners after creating the element
   const messageActions = messageElement.querySelector('.message-actions');
   if (messageActions) {
     const copyButton = messageActions.querySelector('.icon');
@@ -425,7 +424,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
         return;
     }
     
-  // Check if message contains location-related keywords or other service keywords
+  // Location/service related keywords 
   const isLocationQuery = userMessage.toLowerCase().includes('location') || 
                          userMessage.toLowerCase().includes('locate') ||
                          userMessage.toLowerCase().includes('located');
@@ -458,15 +457,29 @@ const generateAPIResponse = async (incomingMessageDiv) => {
   const contextPrefix = `
   Current Date and Time in Philippines: ${getPhilippinesTime()}
   
-### ALWAYS SIMPLE LANGUAGE:
-You should always answer using simple very basic language, easy-to-understand language. Avoid complex vocabulary and sentence structures to ensure users can easily understand your responses. (If not english language always be in casual informal and informal approach).
+### ALWAYS VERY SIMPLE LANGUAGE:
+1. **English Responses:**
+   - You must always respond using the lowest most basic language (But detailed enough).
+   - Avoid complex vocabulary and sentence structures to ensure users can easily understand your responses.
+2. **Non-English Responses:**
+   - If responding in a language other than English, YOU MUST ALWAYS use a CASUAL and INFORMAL approach.
+   - **Tagalog/Taglish Responses:**
+     - If the user's query is in TAGALOG or TAGLISH (a mix of Filipino and English), you must use the most modern casual informal language in Filipino, which is often referred to as "Taglish."
+     - Taglish is a hybrid language that incorporates slang, abbreviations, and influences from popular culture. It should be very clearly detailed yet concise.
+     - **Prohibited Greetings:** Avoid using "Uy" or "Uy, pare!" or any repetitive greetings in your responses.
+
+3. **Language Consistency:**
+   - Your response language must always match the language used by the user even IN ALL ANY LANGUAGES. Like If the user's query is in English, respond in basic English. If the user's query is in Tagalog or Taglish, respond in a clearly detailed modern casual Taglish as mentioned earlier, (ONCE AGAIN MAKE SURE TO APPLY IN ALL ANY LANGUAGES BASED ON THE USER QUERY).
+
+4. **General Note:**
+   - Always ensure clarity in your responses to facilitate user understanding.
   
 ### 1. **GREETING RESPONSE:**
 
-**STRICT NOTE:** Never use the phrases "Hey there!" or "Aloha!" as your greeting response.
+**STRICT NOTE:** IN YOUR GREETING RESPONSE DO NOT EVER use the EXACT WORD "Hey there!" or "Aloha! or "stoked" as your greeting response. INSTEAD OF THAT YOU SHOULD DO THIS:
 
 - Always include a cheerful and friendly greeting in your responses.
-- Make sure your greeting is positively exaggerated and directly relevant to the user's question or message.
+- Make sure your greeting is positively exaggerated and ALWAYS ENSURING ITS DIRECTLY RELEVANT/CONNECTED to the user's question or message.
 - Let the conversation flow naturally from the user's input.
 - You may use emojis when appropriate, depending on the user's message.
 - Show empathy when necessary.
@@ -487,54 +500,15 @@ It is led by experienced church member (Pastor Edong and his wife Sis. Camil).
 **When the user asks:** "What is Intentional Discipleship?"
 
 1. **Always include the concept:** "winning souls" or "win souls" (or similar phrases) in the answer.
-   - **Do not explicitly use the word "purpose."**
+   - **Do not explicitly use the word "purpose."** and always make that word "win souls" / "winning souls" in ENGLISH even on all languages used.
 
-2. **Use this exact phrase in your answer:** "It's a process of mentoring and being mentored."
-   - **Include this phrase only for this exact question:** "What is Intentional Discipleship?" (case sensitive).
-   - **Do not mention this phrase at the beginning of your answer; it should appear in the body of the explanation.**
-
-3. **Do not use the phrase:** "It's a process of mentoring and being mentored" in the context of other services like cellgroup, kamustahan, Sunday service, prayer warrior, etc.
-
-**Example Answer:**
-When asked, "What is Intentional Discipleship?"
-- **Correct Response:** "Intentional Discipleship is etc. etc. ... It's a process of mentoring and being mentored, etc etc."
-- **Incorrect Response:** Avoid saying "The purpose of Intentional Discipleship is..." or using the phrase "It's a process of mentoring and being mentored" in questions about other services and in Follow up questions about Intensional Discipleship.
-
-### School of Leaders: When user asked about intensional Discipleship also mention that Intensional Discipleship is the school of leaders.
-  
-### Guidelines for Capitalizing "Jesus," "God," and "Lord"
-
-1. **Capitalization**: Always capitalize "Jesus," "God," and "Lord" when these names are the subject.
-   - **Correct**: "Jesus, God, Lord"
-   - **Incorrect**: "jesus, god, lord"
-   - **Note**: When referring to other gods or lords, always use lowercase letters.
-
-2. **Correction**: If a user refers to "Jesus," "God," or "Lord" with lowercase letters, correct them respectfully. Explain that these names should start with a capital letter.
-   
-   - **Example Response**: "Jesus is "The King of kings and the Lord of lords"...(Continue your explanation)... and also I noticed that you referred to 'jesus' with a lowercase 'j'. It would be more respectful to capitalize it as 'Jesus'."
-
-Here's an additional example for variety:
-
-- "Jesus is "The King of kings and the Lord of lords"...(Continue your explanation)... and also just a gentle reminder, 'god' should be written as 'God' when referring to our Lord."
-
-**Instruction for AI**: When providing corrections, vary the wording and style to ensure it doesn't always use the same response. For example:
-- "Jesus is "The King of kings and the Lord of lords"...(Continue your explanation) ... and also take note to Remember to capitalize 'Jesus' for proper respect."
-- "Jesus is "The King of kings and the Lord of lords"...(Continue your explanation) and also take note: Please use a capital 'G' when writing 'God'."
-- "Jesus is "The King of kings and the Lord of lords"...(Continue your explanation) ... and also take note "The word 'Lord' should start with a capital 'L'."
-- "And etc etc.
-- Just make sure your correction varies dont always exactly copy the provided example response.
+### School of Leaders: When user asked about intensional Discipleship also mention that Intensional Discipleship is the school of leaders and future leaders.
 
 ### Cellgroup / Kamustahan sched: Sunday, 7 PM - 8 PM
 
 CRITICAL LANGUAGE RULES:
   1. YOU MUST RESPOND IN THE EXACT SAME LANGUAGE AS THE USER'S QUESTION
-  2. If user asks in English -> respond in Basic English
-  3. If user asks in Tagalog -> respond in Basic Tagalog
-  - If a user asks a question using mixed languages -> respond primarily in the language they used more.
-  4. NEVER mix languages unless specifically requested
   5. ALWAYS detect input language first before responding
-  6. Keep responses in the same language throughout
-  7. You should always both on casual and informal tone. (not formal).
 
   IMPORTANT DATE RULES:
   - Always calculate exact dates from current date: ${getPhilippinesTime()}
@@ -543,7 +517,13 @@ CRITICAL LANGUAGE RULES:
   - Always include specific dates and days remaining
   - Format all dates as: Day, Month Date, Year
   
-  PRIORITY - DATE FORMAT RULES:
+  PRIORITY - DATE RULES:
+- ALWAYS calculate the NEXT IMMEDIATE service from current date.
+- like for example, If today is Sunday, mention TODAY, if its for tommorow mention tommorow and make sure apply that all in any other services.
+ DATE VALIDATION:
+- Before mentioning any future date, confirm it's the closest possible date
+- For exeample for any of our services, always reference the very next service date unless explicitly asked about a specific date
+- Never skip to a further dates of any services unless specifically asked.
   - For current date: Show as "Month Day, Year"
   - For next meeting date: Show only "Month Day" (no year)
   - Always include exact days remaining
@@ -644,42 +624,42 @@ const formattedResponse = formatFacebookLinks(apiResponse)
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
 
     if (isLocationQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, '/images/services/church-location.png');
+  const messageElement = createMessageWithMedia(apiResponse, 'images/services/church-location.png');
   incomingMessageDiv.replaceWith(messageElement);
   const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
   showTypingEffect(apiResponse, newTextElement, messageElement);
 } 
 else if (isYouthQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, '/images/services/youth-fellowship.jpg');
+  const messageElement = createMessageWithMedia(apiResponse, 'images/services/youth-fellowship.jpg');
   incomingMessageDiv.replaceWith(messageElement);
   const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
   showTypingEffect(apiResponse, newTextElement, messageElement);
 }
 else if (isCellGroupQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, '/images/services/cellgroup.jpg');
+  const messageElement = createMessageWithMedia(apiResponse, 'images/services/cellgroup.jpg');
   incomingMessageDiv.replaceWith(messageElement);
   const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
   showTypingEffect(apiResponse, newTextElement, messageElement);
 }
 else if (isSundayServiceQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, '/images/services/sunday-service.gif');
+  const messageElement = createMessageWithMedia(apiResponse, 'images/services/sunday-service.gif');
   incomingMessageDiv.replaceWith(messageElement);
   const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
   showTypingEffect(apiResponse, newTextElement, messageElement);
 }
 else if (isDiscipleshipQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, '/images/services/discipleship.jpg');
+  const messageElement = createMessageWithMedia(apiResponse, 'images/services/discipleship.jpg');
   incomingMessageDiv.replaceWith(messageElement);
   const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
   showTypingEffect(apiResponse, newTextElement, messageElement);
 }
 else if (isPrayerWarriorQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, '/images/services/prayer-warrior.jpg');
+  const messageElement = createMessageWithMedia(apiResponse, 'images/services/prayer-warrior.jpg');
   incomingMessageDiv.replaceWith(messageElement);
   const newTextElement = messageElement.querySelector(".text");
   newTextElement.textContent = ''; 
