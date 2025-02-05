@@ -92,36 +92,40 @@ const loadChatHistory = async (ip) => {
     }
 
     querySnapshot.forEach(doc => {
-      const data = doc.data();
-      
-      // Create user message
-      const userMessage = document.createElement('div');
-      userMessage.classList.add('message', 'outgoing');
-      userMessage.innerHTML = `
-        <div class="message-content">
-          <p class="text">${data.message}</p>
-          <small class="time">${data.philippinesTime}</small>
+  const data = doc.data();
+  
+  // Create user message
+  const userMessage = document.createElement('div');
+  userMessage.classList.add('message', 'outgoing');
+  userMessage.innerHTML = `
+    <div class="message-content">
+      <img class="avatar" src="../images/avatars/user.gif" alt="User avatar">
+      <div class="message-container">
+        <p class="text">${data.message}</p>
+      </div>
+    </div>
+  `;
+  
+  // Create bot response
+  const botMessage = document.createElement('div');
+  botMessage.classList.add('message', 'incoming');
+  botMessage.innerHTML = `
+    <div class="message-content">
+      <div class="header-row">
+        <div class="avatar-container">
+          <img class="avatar default-avatar" src="../images/avatars/pcmi-bot.png" alt="Bot avatar">
         </div>
-      `;
-      
-      // Create bot response
-      const botMessage = document.createElement('div');
-      botMessage.classList.add('message', 'incoming');
-      botMessage.innerHTML = `
-        <div class="message-content">
-          <div class="header-row">
-            <div class="avatar-container">
-              <img class="avatar default-avatar" src="./images/avatars/pcmi-bot.png" alt="Bot avatar">
-            </div>
-          </div>
-          <p class="text">${data.response}</p>
-          <small class="time">${data.philippinesTime}</small>
-        </div>
-      `;
+        <div class="answer-indicator">Answer</div>
+      </div>
+      <div class="message-container">
+        <p class="text">${data.response}</p>
+      </div>
+    </div>
+  `;
 
-      chatContainer.appendChild(userMessage);
-      chatContainer.appendChild(botMessage);
-    });
+  chatContainer.appendChild(userMessage);
+  chatContainer.appendChild(botMessage);
+});
 
     // Scroll to top of chat history
     chatContainer.scrollTop = 0;

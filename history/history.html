@@ -3,18 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PCMI ChatBot - Admin Panel</title>
+  <title>PCMI ChatBot - Chat History</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <link rel="stylesheet" href="history-styles.css">
 </head>
 <body class="dark-theme">
   <div class="admin-container">
+    <!-- Users List Panel -->
     <div class="users-list">
-      <h2>User Chat Histories</h2>
-      <div id="ip-list"></div>
+      <div class="panel-header">
+        <h2>User Histories</h2>
+      </div>
+      <div id="ip-list" class="ip-list-container"></div>
     </div>
     
+    <!-- Chat History Panel -->
     <div class="chat-history">
-      <h2 id="selected-user"></h2>
+      <div class="history-header">
+        <h2 id="selected-user"></h2>
+      </div>
       <div id="chat-container" class="chat-list"></div>
     </div>
   </div>

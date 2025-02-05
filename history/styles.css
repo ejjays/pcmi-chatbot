@@ -974,12 +974,88 @@ img {
   text-decoration: underline;
 }
 
-
-
-
-
-
 ::selection {
     background-color: #ffcc00; /* Change to your desired background color */
     color: #ffffff; /* Change to your desired text color */
+}
+
+
+/* Add to the bottom of styles.css */
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .admin-container {
+    grid-template-columns: 1fr;
+  }
+
+  .users-list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    border-right: none;
+    border-bottom: 1px solid #4d4d4f;
+    z-index: 100;
+  }
+
+  .panel-header {
+    padding: 10px 20px;
+  }
+
+  .ip-list-container {
+    padding: 10px;
+    height: calc(100vh - 60px);
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ip-list-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ip-item {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 15px;
+    white-space: nowrap;
+  }
+
+  .chat-history {
+    margin-top: 60px;
+    height: calc(100vh - 60px);
+  }
+
+  .history-header {
+    padding: 10px 20px;
+  }
+
+  .message {
+    padding: 15px;
+  }
+
+  .text {
+    font-size: 0.9rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .message-content {
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ip-item {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
 }
