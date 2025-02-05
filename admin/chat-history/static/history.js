@@ -26,7 +26,6 @@ const chatContainer = document.getElementById('chat-container');
 const selectedUser = document.getElementById('selected-user');
 
 // Load unique IP addresses
-// Load unique IP addresses
 const loadUserIPs = async () => {
   try {
     const chatHistoryRef = collection(db, "chat-history");
@@ -73,7 +72,8 @@ const loadChatHistory = async (ip) => {
   try {
     
     chatContainer.innerHTML = '<div class="loading">Loading messages...</div>';
-
+    
+    console.log('Loading chat history for IP:', ip);
     const chatHistoryRef = collection(db, "chat-history");
     const q = query(
       chatHistoryRef,
@@ -82,6 +82,7 @@ const loadChatHistory = async (ip) => {
     );
 
     const querySnapshot = await getDocs(q);
+    console.log('Query results:', querySnapshot.size); 
     
     chatContainer.innerHTML = '';
     
@@ -93,11 +94,12 @@ const loadChatHistory = async (ip) => {
     querySnapshot.forEach(doc => {
   const data = doc.data();
   
-  // Create user message
+  // Create user message with timestamp
   const userMessage = document.createElement('div');
   userMessage.classList.add('message', 'outgoing');
   userMessage.innerHTML = `
     <div class="message-content">
+      <div class="timestamp">${data.philippinesTime}</div>
       <img class="avatar" src="../images/avatars/user.gif" alt="User avatar">
       <div class="message-container">
         <p class="text">${data.message}</p>
