@@ -1,0 +1,51 @@
+/* Import existing styles for chat messages */
+@import url('styles.css');
+
+.dark-theme {
+  background: #343541;
+  color: #fff;
+}
+
+.admin-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: 100vh;
+  gap: 20px;
+  padding: 20px;
+}
+
+.users-list {
+  background: #444654;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.ip-item {
+  padding: 10px;
+  margin: 5px 0;
+  background: #565869;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.ip-item:hover {
+  background: #676980;
+}
+
+.chat-history {
+  background: #444654;
+  border-radius: 10px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+#chat-container {
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #fff;
+}

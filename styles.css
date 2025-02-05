@@ -7,7 +7,7 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
   -webkit-tap-highlight-color: transparent;
-  /* user-select: none;*/
+  user-select: red;
 } 
 
 :root {
@@ -972,4 +972,14 @@ img {
 
 .message-container a:hover {
   text-decoration: underline;
+}
+
+
+
+
+
+
+::selection {
+    background-color: #ffcc00; /* Change to your desired background color */
+    color: #ffffff; /* Change to your desired text color */
 }

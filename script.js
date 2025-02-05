@@ -3,6 +3,7 @@ let aiRules = '';
 let churchKnowledge = '';
 let conversationHistory = [];
 let linkFormatRules = '';
+let taglishRules = '';
 let userIsScrolling = false;
 let areFollowUpsHidden = false; 
 let userMessage = null;
@@ -30,6 +31,23 @@ const loadInitialState = () => {
 };
 loadInitialState();
 
+
+
+
+const chatHistoryCollection = collection(db, "chat-history");
+
+const getUserIP = async () => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    return data.ip;
+  } catch (error) {
+    console.error('Error getting IP:', error);
+    return 'unknown';
+  }
+};
+
+
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -55,19 +73,22 @@ const loadTrainingData = async () => {
             churchKnowledgeDoc,
             aiRulesDoc,
             linkFormatRulesDoc,
-            conversationFlowDoc
+            conversationFlowDoc,
+            taglishVocabularyDoc
         ] = await Promise.all([
             getDoc(doc(db, 'training-data', 'church-knowledge')),
             getDoc(doc(db, 'training-data', 'ai-rules')),
             getDoc(doc(db, 'training-data', 'link-format-rules')),
-            getDoc(doc(db, 'training-data', 'conversation-flow'))
+            getDoc(doc(db, 'training-data', 'conversation-flow')),
+            getDoc(doc(db, 'training-data', 'taglish-vocabulary'))
         ]);
-
+        
         // Check if documents exist
         if (!churchKnowledgeDoc.exists() || 
             !aiRulesDoc.exists() || 
             !linkFormatRulesDoc.exists() || 
-            !conversationFlowDoc.exists()) {
+            !conversationFlowDoc.exists() ||
+            !taglishVocabularyDoc.exists()) {  
             throw new Error("Some training data documents are missing");
         }
 
@@ -76,12 +97,12 @@ const loadTrainingData = async () => {
         aiRules = aiRulesDoc.data().content;
         linkFormatRules = linkFormatRulesDoc.data().content;
         conversationFlowRules = conversationFlowDoc.data().content;
+        taglishRules = taglishVocabularyDoc.data().content;  
 
-       isDataLoaded = true;
+        isDataLoaded = true;
         console.log('Training data loaded successfully');
     } catch (error) {
         console.error('Error loading training data:', error);
-        // Add user-facing error handling
     }
 };
 
@@ -465,8 +486,9 @@ const generateAPIResponse = async (incomingMessageDiv) => {
    - If responding in a language other than English, YOU MUST ALWAYS use a CASUAL and INFORMAL approach.
    - **Tagalog/Taglish Responses:**
      - If the user's query is in TAGALOG or TAGLISH (a mix of Filipino and English), you must use the most modern casual informal language in Filipino, which is often referred to as "Taglish."
-     - Taglish is a hybrid language that incorporates slang, abbreviations, and influences from popular culture. It should be very clearly detailed yet concise.
+     - Taglish is a hybrid language that incorporates slang, abbreviations, and influences from popular culture. It should be very clearly detailed yet concise. ; Use this vocabulary list for your exact word term for your taglish vocabulary response "${taglishRules}".
      - **Prohibited Greetings:** Avoid using "Uy" or "Uy, pare!" or any repetitive greetings in your responses.
+     TAKE NOTE: ENGLISH AND TAGLISH IS BOTH DIFFERENT LANGUAGE SO MAKE SURE DO NOT MIX TAGALOG AND ENGLISH IF THE USER QUERY IS IN PURE ENGLISH.
 
 3. **Language Consistency:**
    - Your response language must always match the language used by the user even IN ALL ANY LANGUAGES. Like If the user's query is in English, respond in basic English. If the user's query is in Tagalog or Taglish, respond in a clearly detailed modern casual Taglish as mentioned earlier, (ONCE AGAIN MAKE SURE TO APPLY IN ALL ANY LANGUAGES BASED ON THE USER QUERY) (AND ALSO APPLY THAT ON NON-CHURCH RELATED QUESTIONS)
@@ -476,7 +498,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
   
 ### 1. **GREETING RESPONSE:**
 
-**STRICT NOTE:** IN YOUR GREETING RESPONSE DO NOT EVER use the EXACT WORD "Hey there!" or "Aloha! or "stoked" as your greeting response. INSTEAD OF THAT YOU SHOULD DO THIS:
+**STRICT NOTE:** IN YOUR GREETING RESPONSE ALWAYS DOUBLE CHECK YOUR RESPONSE HISTORY AND FIRSTLY CHECK IF AN GREETING RESPONSE IS ALREADY SAID DONT USE IT TO AVAOID REPETITIVE GREETING RESPONSE. AND DO NOT EVER use the EXACT WORD "Hey there!" or "Aloha! or "stoked/Stoked" as your greeting response. INSTEAD OF THAT YOU SHOULD DO THIS:
 
 - Always include a cheerful and friendly greeting in your responses.
 - Make sure your greeting is positively exaggerated and ALWAYS ENSURING ITS DIRECTLY RELEVANT/CONNECTED to the user's question or message.
@@ -488,6 +510,8 @@ const generateAPIResponse = async (incomingMessageDiv) => {
 
 - **Avoid formulaic greetings:** Do not use standard phrases like "Hey there!", "Hi friend!", etc.
 - **Ensure relevance:** Do not add greetings that are unrelated to the user's message.:  Just take note: Do not copy this exact example for your greeting response, Always create a unique positively exaggerated and directly relevant depending on the user's question or message.
+
+### VERY IMPORTANT NOTE AGAIN: ALWAYS TRACK / CHECK YOUR CONVERSATION HISTORY AND DO NOT REPEAT THE GREETING RESPONSE THAT ALREADY SAID IN YOUR CONVERSATION HISYORY like "Wow" or "Super" etc.
 
 
 ### **intensional Discipleship Details**: Intentional Discipleship: Intentional Discipleship is a school of leaders that covers deep topics to EQUIP our leaders and future leaders. This teaches discipline, deep Bible study, and  step-by-step instruction in personal evangelism. It also guide participants through deep teachings discussions and after they completed the 6 stages class, they are now be prepared for practical applications to WIN SOULS.
@@ -589,6 +613,9 @@ CRITICAL LANGUAGE RULES:
   CHURCH KNOWLEDGE BASE:
   ${churchKnowledge}
   
+  TAGLISH LANGUAGE RULES:
+  ${taglishRules}
+  
   Previous conversation context and current query: `;
 
   try {
@@ -610,6 +637,17 @@ CRITICAL LANGUAGE RULES:
     if (!response.ok) throw new Error(data.error.message);
 
   const apiResponse = data.candidates[0].content.parts[0].text;
+  
+  const userIP = await getUserIP();
+    const timestamp = new Date().toISOString();
+    
+    await addDoc(chatHistoryCollection, {
+      userIP,
+      timestamp,
+      message: userMessage,
+      response: apiResponse,
+      philippinesTime: getPhilippinesTime()
+    });
     
 // Format Facebook links first
 const formattedResponse = formatFacebookLinks(apiResponse)
