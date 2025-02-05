@@ -1097,3 +1097,17 @@ img {
   border-left: 3px solid #10a37f;
   color: #fff;
 }
+
+
+
+.message-timestamp {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+  text-align: right;
+}
+
+.message {
+  position: relative;
+  padding-top: 20px; /* Make room for timestamp */
+}

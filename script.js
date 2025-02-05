@@ -146,7 +146,21 @@ const loadDataFromLocalstorage = () => {
 const createMessageElement = (content, ...classes) => {
   const div = document.createElement("div");
   div.classList.add("message", ...classes);
-  div.innerHTML = content;
+  
+  // Add timestamp
+  const timestamp = new Date().toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+    weekday: "short"
+  });
+  
+  const messageHTML = `
+    <div class="message-timestamp">${timestamp}</div>
+    ${content}
+  `;
+  
+  div.innerHTML = messageHTML;
   return div;
 }
 
