@@ -136,29 +136,34 @@ const loadDataFromLocalstorage = () => {
     conversationHistory = JSON.parse(savedHistory);
   }
 
-  // Restore saved chats or clear the chat container
   chatContainer.innerHTML = savedChats || '';
   document.body.classList.toggle("hide-header", savedChats);
 
   chatContainer.scrollTo(0, chatContainer.scrollHeight);
 }
-// Create a new message element and return it
+
 const createMessageElement = (content, ...classes) => {
   const div = document.createElement("div");
   div.classList.add("message", ...classes);
   
-  // Add timestamp
-  const timestamp = new Date().toLocaleString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-    weekday: "short"
-  });
+  const isAdminPanel = window.location.pathname.includes('admin');
   
-  const messageHTML = `
-    <div class="message-timestamp">${timestamp}</div>
-    ${content}
-  `;
+  let messageHTML;
+  if (isAdminPanel) {
+    const timestamp = new Date().toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      weekday: "short"
+    });
+    
+    messageHTML = `
+      <div class="message-timestamp">${timestamp}</div>
+      ${content}
+    `;
+  } else {
+    messageHTML = content;
+  }
   
   div.innerHTML = messageHTML;
   return div;
