@@ -43,19 +43,22 @@ const loadUserIPs = async () => {
       ipDiv.classList.add('ip-item');
       ipDiv.textContent = ip;
       
-      // Add active state handling
-      ipDiv.addEventListener('click', () => {
-        // Remove active class from all IPs
-        document.querySelectorAll('.ip-item').forEach(item => {
-          item.classList.remove('active');
-        });
-        
-        // Add active class to clicked IP
-        ipDiv.classList.add('active');
-        
-        // Load chat history for this IP
-        loadChatHistory(ip);
-      });
+      // In loadUserIPs function, update the click event listener
+ipDiv.addEventListener('click', () => {
+  // Remove active class from all IPs
+  document.querySelectorAll('.ip-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  
+  // Add active class to clicked IP
+  ipDiv.classList.add('active');
+  
+  // Load chat history for this IP
+  loadChatHistory(ip);
+  
+  // Hide the users list panel
+  hideUsersList();
+});
       
       ipList.appendChild(ipDiv);
     });
@@ -68,8 +71,7 @@ const loadUserIPs = async () => {
 // Load chat history for selected IP
 const loadChatHistory = async (ip) => {
   try {
-    // Show loading state
-    selectedUser.textContent = `Loading chat history for ${ip}...`;
+    
     chatContainer.innerHTML = '<div class="loading">Loading messages...</div>';
 
     const chatHistoryRef = collection(db, "chat-history");
@@ -80,11 +82,8 @@ const loadChatHistory = async (ip) => {
     );
 
     const querySnapshot = await getDocs(q);
-  
     
-    // Clear container after loading
     chatContainer.innerHTML = '';
-    selectedUser.textContent = `Chat History for ${ip}`;
     
     if (querySnapshot.empty) {
       chatContainer.innerHTML = '<div class="no-messages">No messages found</div>';
@@ -129,6 +128,10 @@ const loadChatHistory = async (ip) => {
 
     // Scroll to top of chat history
     chatContainer.scrollTop = 0;
+    
+    // Add this at the end of the function
+    document.querySelector('.chat-history').classList.add('full-width');
+    
 
   } catch (error) {
     console.error('Error loading chat history:', error);
@@ -141,5 +144,18 @@ const loadChatHistory = async (ip) => {
   }
 };  
 
+// Add this function to history.js
+const hideUsersList = () => {
+  const usersList = document.querySelector('.users-list');
+  const chatHistory = document.querySelector('.chat-history');
+  
+  usersList.style.display = 'none';
+  chatHistory.style.gridColumn = '1 / -1'; // Make chat history take full width
+  
+  // Adjust margins for mobile view
+  if (window.innerWidth <= 768) {
+    chatHistory.style.marginTop = '0';
+  }
+};
 // Load IP list on page load
 loadUserIPs();

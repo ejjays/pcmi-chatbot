@@ -1059,3 +1059,16 @@ img {
     padding: 6px 12px;
   }
 }
+
+/* Add to styles.css */
+.chat-history.full-width {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .chat-history.full-width {
+    margin-top: 0;
+    height: 100vh;
+  }
+}
