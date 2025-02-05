@@ -26,70 +26,110 @@ const chatContainer = document.getElementById('chat-container');
 const selectedUser = document.getElementById('selected-user');
 
 // Load unique IP addresses
+// Load unique IP addresses
 const loadUserIPs = async () => {
-  const chatHistoryRef = collection(db, "chat-history");
-  const querySnapshot = await getDocs(chatHistoryRef);
-  
-  const uniqueIPs = new Set();
-  querySnapshot.forEach(doc => {
-    uniqueIPs.add(doc.data().userIP);
-  });
+  try {
+    const chatHistoryRef = collection(db, "chat-history");
+    const querySnapshot = await getDocs(chatHistoryRef);
+    
+    const uniqueIPs = new Set();
+    querySnapshot.forEach(doc => {
+      uniqueIPs.add(doc.data().userIP);
+    });
 
-  ipList.innerHTML = '';
-  uniqueIPs.forEach(ip => {
-    const ipDiv = document.createElement('div');
-    ipDiv.classList.add('ip-item');
-    ipDiv.textContent = ip;
-    ipDiv.addEventListener('click', () => loadChatHistory(ip));
-    ipList.appendChild(ipDiv);
-  });
+    ipList.innerHTML = '';
+    uniqueIPs.forEach(ip => {
+      const ipDiv = document.createElement('div');
+      ipDiv.classList.add('ip-item');
+      ipDiv.textContent = ip;
+      
+      // Add active state handling
+      ipDiv.addEventListener('click', () => {
+        // Remove active class from all IPs
+        document.querySelectorAll('.ip-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        // Add active class to clicked IP
+        ipDiv.classList.add('active');
+        
+        // Load chat history for this IP
+        loadChatHistory(ip);
+      });
+      
+      ipList.appendChild(ipDiv);
+    });
+  } catch (error) {
+    console.error('Error loading IPs:', error);
+    ipList.innerHTML = '<div class="error">Error loading user IPs</div>';
+  }
 };
 
 // Load chat history for selected IP
 const loadChatHistory = async (ip) => {
-  selectedUser.textContent = `Chat History for ${ip}`;
-  chatContainer.innerHTML = '';
+  try {
+    // Show loading state
+    selectedUser.textContent = `Loading chat history for ${ip}...`;
+    chatContainer.innerHTML = '<div class="loading">Loading messages...</div>';
 
-  const chatHistoryRef = collection(db, "chat-history");
-  const q = query(
-    chatHistoryRef,
-    where("userIP", "==", ip),
-    orderBy("timestamp", "asc")
-  );
+    const chatHistoryRef = collection(db, "chat-history");
+    const q = query(
+      chatHistoryRef,
+      where("userIP", "==", ip),
+      orderBy("timestamp", "asc")
+    );
 
-  const querySnapshot = await getDocs(q);
-  
-  querySnapshot.forEach(doc => {
-    const data = doc.data();
+    const querySnapshot = await getDocs(q);
     
-    // Create user message
-    const userMessage = document.createElement('div');
-    userMessage.classList.add('message', 'outgoing');
-    userMessage.innerHTML = `
-      <div class="message-content">
-        <p class="text">${data.message}</p>
-        <small class="time">${data.philippinesTime}</small>
-      </div>
-    `;
+    // Clear container after loading
+    chatContainer.innerHTML = '';
+    selectedUser.textContent = `Chat History for ${ip}`;
     
-    // Create bot response
-    const botMessage = document.createElement('div');
-    botMessage.classList.add('message', 'incoming');
-    botMessage.innerHTML = `
-      <div class="message-content">
-        <div class="header-row">
-          <div class="avatar-container">
-            <img class="avatar default-avatar" src="images/avatars/pcmi-bot.png" alt="Bot avatar">
-          </div>
+    if (querySnapshot.empty) {
+      chatContainer.innerHTML = '<div class="no-messages">No messages found</div>';
+      return;
+    }
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      
+      // Create user message
+      const userMessage = document.createElement('div');
+      userMessage.classList.add('message', 'outgoing');
+      userMessage.innerHTML = `
+        <div class="message-content">
+          <p class="text">${data.message}</p>
+          <small class="time">${data.philippinesTime}</small>
         </div>
-        <p class="text">${data.response}</p>
-        <small class="time">${data.philippinesTime}</small>
-      </div>
-    `;
+      `;
+      
+      // Create bot response
+      const botMessage = document.createElement('div');
+      botMessage.classList.add('message', 'incoming');
+      botMessage.innerHTML = `
+        <div class="message-content">
+          <div class="header-row">
+            <div class="avatar-container">
+              <img class="avatar default-avatar" src="../images/avatars/pcmi-bot.png" alt="Bot avatar">
+            </div>
+          </div>
+          <p class="text">${data.response}</p>
+          <small class="time">${data.philippinesTime}</small>
+        </div>
+      `;
 
-    chatContainer.appendChild(userMessage);
-    chatContainer.appendChild(botMessage);
-  });
+      chatContainer.appendChild(userMessage);
+      chatContainer.appendChild(botMessage);
+    });
+
+    // Scroll to top of chat history
+    chatContainer.scrollTop = 0;
+
+  } catch (error) {
+    console.error('Error loading chat history:', error);
+    chatContainer.innerHTML = '<div class="error">Error loading chat history</div>';
+    selectedUser.textContent = 'Error loading chat history';
+  }
 };
 
 // Load IP list on page load

@@ -49,3 +49,39 @@ h2 {
   margin-bottom: 20px;
   color: #fff;
 }
+
+.ip-item {
+  padding: 10px;
+  margin: 5px 0;
+  background: #444654;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ip-item:hover {
+  background: #565869;
+}
+
+.ip-item.active {
+  background: #565869;
+  border-left: 4px solid #10a37f;
+}
+
+.loading {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
+
+.error {
+  padding: 20px;
+  text-align: center;
+  color: #ff4444;
+}
+
+.no-messages {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
