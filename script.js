@@ -11,7 +11,13 @@ let isResponseGenerating = false;
 let isDataLoaded = false;
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  collection, 
+  addDoc 
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -25,16 +31,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const chatHistoryCollection = collection(db, "chat-history");
 
 const loadInitialState = () => {
     areFollowUpsHidden = localStorage.getItem('hideFollowUps') === 'true';
 };
 loadInitialState();
-
-
-
-
-const chatHistoryCollection = collection(db, "chat-history");
 
 const getUserIP = async () => {
   try {
@@ -638,16 +640,20 @@ CRITICAL LANGUAGE RULES:
 
   const apiResponse = data.candidates[0].content.parts[0].text;
   
+  try {
   const userIP = await getUserIP();
-    const timestamp = new Date().toISOString();
+  const timestamp = new Date().toISOString();
     
-    await addDoc(chatHistoryCollection, {
-      userIP,
-      timestamp,
-      message: userMessage,
-      response: apiResponse,
-      philippinesTime: getPhilippinesTime()
-    });
+  await addDoc(chatHistoryCollection, {
+    userIP,
+    timestamp,
+    message: userMessage,
+    response: apiResponse,
+    philippinesTime: getPhilippinesTime()
+  });
+} catch (error) {
+  console.error('Error storing chat history:', error);
+}
     
 // Format Facebook links first
 const formattedResponse = formatFacebookLinks(apiResponse)

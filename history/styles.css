@@ -1,0 +1,985 @@
+/* Import Google Font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap'); 
+
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: red;
+} 
+
+:root {
+  /* Dark mode colors */
+  --text-color: #E3E3E3;
+  --subheading-color: #828282;
+  --placeholder-color: #A6A6A6;
+  --primary-color: #242424;
+  --secondary-color: #383838;
+  --secondary-hover-color: #444;
+ /* user-select: none;*/
+  transition: all 0.5s ease;
+}
+
+.light_mode {
+  /* Light mode colors */
+  --text-color: #222;
+  --subheading-color: #A0A0A0;
+  --placeholder-color: #6C6C6C;
+  --primary-color: #FFF;
+  --secondary-color: #E9EEF6;
+  --secondary-hover-color: #DBE1EA;
+}
+
+body {
+  background: var(--primary-color);
+  transition: background-color 0.5s ease;
+}
+
+.chat-list .message .text,
+.header .title,
+.header .subtitle,
+.typing-form .typing-input,
+.typing-area .icon,
+.suggestion-list .suggestion,
+.chat-list .message .icon {
+  transition: all 0.5s ease;
+}
+
+.chat-list {
+  padding: 2rem 1rem 12rem;
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-color: #999 transparent;
+  position: relative; /* Add this line */
+  z-index: 1; /* Add this line */
+}
+
+.header, .chat-list .message, .typing-form {
+  margin: 0 auto;
+  max-width: 980px;
+}
+
+.header {
+  margin-top: 6vh;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+
+body.hide-header .header {
+  margin: 0;
+  display: none;
+}
+
+.header :where(.title, .subtitle) {
+  color: var(--text-color);
+  font-weight: 500;
+  line-height: 4rem;
+}
+
+.header .title {
+  width: fit-content;
+  font-size: 3rem;
+  background-clip: text;
+  background: linear-gradient(to right, #4285f4, #d96570);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header .subtitle {
+  font-size: 2.6rem;
+  color: var(--subheading-color);
+}
+
+.suggestion-list {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 9.5vh;
+  overflow: hidden;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.suggestion-list .suggestion {
+  cursor: pointer;
+  padding: 1.25rem;
+  width: 222px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-radius: 0.75rem;
+  justify-content: space-between;
+  background: var(--secondary-color);
+  transition: 0.5s ease;
+}
+
+.suggestion-list .suggestion:hover {
+  background: var(--secondary-hover-color);
+}
+
+
+.suggestion-list .suggestion :where(.text, .icon) {
+  font-weight: 400;
+  color: var(--text-color);
+  transition: all 0.5s ease;
+}
+
+.suggestion-list .suggestion .icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  font-size: 1.3rem;
+  margin-top: 2.5rem;
+  align-self: flex-end;
+  align-items: center;
+  object-fit: cover;
+  justify-content: center;
+  border-radius: 35%;
+  border: 0.7px solid white; 
+  background: var(--primary-color);
+  color: var(--text-color);
+  transition: all 0.5s ease;
+}
+
+.chat-list {
+  padding: 2rem 1rem 12rem;
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-color: #999 transparent;
+}
+
+.chat-list .message.incoming {
+  margin-top: 1.5rem;
+}
+
+
+.chat-list .message .text {
+  color: var(--text-color);
+  white-space: pre-wrap;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  transition: color 0.5s ease;
+}
+
+.chat-list .message.error .text {
+  color: #e55865;
+}
+
+.chat-list .message.loading .text {
+  display: none;
+}
+
+.chat-list .message .avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  align-self: flex-start;
+}
+
+.chat-list .message.loading .avatar {
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.chat-list .message .icon {
+  color: var(--text-color);
+  cursor: pointer;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  font-size: 1.25rem;
+ /* margin-left: 3.5rem; */
+  left: 1rem;
+  visibility: hidden; 
+}
+
+.chat-list .message .icon.hide {
+  visibility: hidden;
+}
+
+.chat-list .message:not(.loading, .error):hover .icon:not(.hide){
+  visibility: visible;
+}
+
+.chat-list .message .icon:hover {
+  background: var(--secondary-hover-color);
+}
+
+.chat-list .message .loading-indicator {
+  display: none;
+  gap: 0.8rem;
+  width: 100%;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.chat-list .message.loading .loading-indicator {
+  display: flex;
+}
+
+.chat-list .message .loading-indicator .loading-bar {
+  height: 11px;
+  width: 100%;
+  border-radius: 0.135rem;
+  background-position: -800px 0;
+  background: linear-gradient(to right, #4285f4, var(--primary-color), #4285f4);
+  animation: loading 3s linear infinite;
+}
+
+.chat-list .message .loading-indicator .loading-bar:last-child {
+  width: 70%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: -800px 0;
+  }
+
+  100% {
+    background-position: 800px 0;
+  }
+}
+
+.typing-area {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 1rem;
+  background: var(--primary-color);
+  transition: all 0.5s ease;
+  z-index: 1000;
+}
+
+.typing-area :where(.typing-form, .action-buttons) {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.typing-form .input-wrapper {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  position: relative;
+  z-index: 1001;
+}
+
+.typing-form .typing-input {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 1rem;
+  color: var(--text-color);
+  padding: 1.1rem 4rem 1.1rem 1.5rem;
+  border-radius: 100px;
+  background: var(--secondary-color);
+  transition: all 0.5s ease;
+}
+
+.typing-form .typing-input:focus {
+  background: var(--secondary-hover-color);
+}
+
+.typing-form .typing-input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.typing-area .icon {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  font-size: 1.4rem;
+  color: var(--text-color);
+  align-items: center;
+  justify-content: center;
+  background: var(--secondary-color);
+  transition: 0.5s ease;
+}
+
+.typing-area .icon:hover {
+  background: var(--secondary-hover-color);
+}
+
+.typing-form #send-message-button {
+  position: absolute;
+  right: 0;
+  outline: none;
+  border: none;
+  transform: scale(0);
+  background: transparent;
+  transition: transform 0.2s ease;
+}
+
+.typing-form .input-wrapper.expanded #send-message-button {
+  transform: scale(1);
+}
+
+/* Show the send button when there's text OR when input is expanded */
+.typing-form .typing-input:valid ~ #send-message-button,
+.typing-form .input-wrapper.expanded #send-message-button {
+  transform: scale(1);
+}
+
+.typing-area .footer-text {
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  color: var(--placeholder-color);
+  transition: all 0.5s ease;
+}
+
+/* Responsive media query code for small screen */
+@media (max-width: 768px) {
+  .header :is(.title, .subtitle) {
+    font-size: 2rem;
+    line-height: 2.6rem;
+  }
+
+  .header .subtitle {
+    font-size: 1.7rem;
+  }
+
+  .typing-area :where(.typing-form, .action-buttons) {
+    gap: 0.4rem;
+  }
+
+  .typing-form .input-wrapper {
+    height: 50px;
+  }
+
+  .typing-form .typing-input {
+    padding: 1.1rem 3.5rem 1.1rem 1.2rem;
+  }
+
+  .typing-area .icon {
+    height: 50px;
+    width: 50px;
+  }
+
+  .typing-area .footer-text {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}
+
+.chat-list .message .text strong,
+.chat-list .message .text b {
+  font-weight: 600;
+}
+
+strong {
+    font-weight: 700;
+    display: inline;
+}
+
+.chat-list .message .text em,
+.chat-list .message .text i {
+  font-style: italic;
+}
+
+.person-link {
+    color: red;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+
+/* Add these rules to your existing CSS */
+.typing-area .action-buttons {
+  transition: opacity 0.5s ease, width 0.5s ease;
+  opacity: 1;
+  width: auto;
+}
+
+.typing-area .action-buttons.hide {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+.typing-form .input-wrapper {
+  width: calc(100% - 120px); /* Initial width accounting for action buttons */
+  transition: width 0.5s ease;
+}
+
+.typing-form .input-wrapper.expanded {
+  width: 100%; /* Full width when expanded */
+}
+
+
+/* Base message styles */
+.chat-list .message .message-content {
+  display: flex;
+  width: 100%;
+  position: relative; /* Add this line */
+  z-index: 1;
+  transition: background-color 0.5s ease;
+}
+
+/* Outgoing (user) message styles */
+.chat-list .message.outgoing .message-content {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 8px 0;
+  position: relative; 
+}
+
+.chat-list .message.outgoing .message-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Add this */
+  min-height: 40px; /* Add this - match avatar height */
+  position: relative;
+  z-index: 2;
+  background: var(--primary-color);
+  background: #4285f4; /* Same color as Answer/Thinking text */
+  padding: 10px 15px; /* Add padding for better appearance */
+  border-radius: 15px; /* Rounded corners */
+  margin-left: 10px; /* Add left margin instead */
+}
+
+.chat-list .message.outgoing .text {
+  color: white !important;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+  line-height: 1.4; /* Add this for better text alignment */
+}
+
+/* Incoming (AI) message styles */
+.chat-list .message.incoming .message-content {
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Message container for AI responses */
+.message-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Header row for AI messages */
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 12px;
+}
+
+/* Avatar sizes */
+.header-row .avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 0;
+}
+
+.chat-list .message.outgoing .avatar {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chat-list .message.incoming .avatar,
+.header-row .avatar,
+.default-avatar,
+.thinking-avatar {
+  border-radius: 0;
+}
+
+/* AI "Answer" Word */
+.answer-indicator {
+  color: #4285f4;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.chat-list .message {
+  transition: all 0.5s ease;
+  position: relative;
+  z-index: 1;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.response-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    opacity: 0;
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    will-change: opacity, transform;
+}
+
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    40% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Avatar container and transitions */
+.avatar-container {
+  position: relative;
+  width: 35px;
+  height: 35px;
+}
+
+.avatar {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.default-avatar {
+  opacity: 1;
+  border-radius: 0;
+}
+
+.thinking-avatar {
+  border-radius: 0;
+  opacity: 0;
+}
+
+/* When loading, swap the visibility */
+.message.loading .default-avatar {
+  opacity: 0;
+}
+
+.message.loading .thinking-avatar {
+  opacity: 1;
+}
+
+/* Remove the previous rotation animation */
+.chat-list .message.loading .avatar {
+  animation: none;
+}
+
+/* Add the pulse animation keyframes */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Add animation to "Thinking..." text when message is loading */
+.message.loading .answer-indicator {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.theme-transitioning {
+  pointer-events: none;
+}
+
+.message-transition-disabled {
+  transition: none !important;
+}
+
+
+
+/* Define the fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Apply animation to outgoing messages */
+.chat-list .message.outgoing .message-container {
+  /* Keep your existing styles */
+  background-color: #4285f4;
+  padding: 10px 15px;
+  border-radius: 20px 3px 20px 20px;
+  margin-right: 10px;
+  position: relative;
+  max-width: 80%;
+  align-self: flex-end;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  
+  /* Add animation properties */
+ animation: fadeIn 1s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* Optional: Add will-change for better performance */
+.chat-list .message.outgoing {
+  will-change: opacity, transform;
+}
+
+.chat-list .message.outgoing .text {
+  color: white;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+/* Optional hover effect */
+.chat-list .message.outgoing .message-container:hover {
+  background-color: #3b78e7;
+}
+
+
+.suggestions-container {
+  margin-top: 15px;
+  padding: 10px;
+  background: var(--secondary-color);
+  border-radius: 8px;
+}
+
+.suggestions-title {
+  font-size: 14px;
+  color: var(--subheading-color);
+  margin-bottom: 10px;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.suggestion-item {
+  background: var(--primary-color); 
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.5s ease; 
+}
+
+.suggestion-item:hover {
+  background: var(--secondary-hover-color);
+}
+
+.suggestion-separator {
+  height: 1px;
+  background: var(--text-color);
+  opacity: 0.1;
+}
+
+.suggestion-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.suggestions-container {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+  max-height: 1000px; /* Keep this */
+  opacity: 1;
+  margin: 15px 0;
+  padding: 10px;
+  transform-origin: top;
+  transform: scaleY(1);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.5, 1);
+  overflow: hidden;
+}
+
+.suggestions-container.hiding {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  transform: scaleY(0);
+  /* Remove transform-origin if present */
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.5, 1);
+  pointer-events: none;
+}
+
+/* Add these new rules */
+.suggestions-list {
+  transform-origin: top;
+  height: auto;
+  min-height: fit-content;
+}
+
+.suggestion-item {
+  height: auto;
+  min-height: fit-content;
+  transform-origin: top;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.suggestion-text {
+  height: auto;
+  transform-origin: top;
+  white-space: normal; /* Prevent text compression */
+  line-height: 1.4; /* Maintain consistent line height */
+}
+
+.suggestion-item:nth-child(1) { animation-delay: 0.1s; }
+.suggestion-item:nth-child(3) { animation-delay: 0.2s; }
+.suggestion-item:nth-child(5) { animation-delay: 0.3s; }
+.suggestion-item:nth-child(7) { animation-delay: 0.4s; }
+
+.message-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.regenerate-icon {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.regenerate-icon:hover {
+  background-color: var(--secondary-color);
+  opacity: 1;
+}
+
+/* Animation for regenerate icon */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.regenerate-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+.suggestions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.suggestions-options {
+    position: relative;
+    cursor: pointer;
+}
+
+.three-dots {
+    font-size: 20px;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.three-dots:hover {
+    background-color: var(--secondary-hover-color);
+}
+
+.options-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.options-dropdown.show {
+    display: block;
+}
+
+.option-item {
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.option-item:hover {
+    background-color: #f5f5f5;
+}
+
+.option-item:active {
+    transform: scale(1.05);
+}
+
+
+/* EXPERIMENTING */
+
+.message-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start; 
+  margin-top: 8px;
+  margin-left: 2px;
+}
+
+.message-actions .icon {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  visibility: hidden;
+  color: var(--text-color);
+}
+
+.chat-list .message:hover .message-actions .icon {
+  visibility: visible;
+}
+
+.message-actions .icon:hover {
+  background: var(--secondary-hover-color);
+}
+
+/* Animation for refresh icon */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.message-actions .icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+
+
+/* EXPP */
+
+
+.menu-icon {
+    display: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.menu-icon:hover {
+    background: var(--secondary-hover-color);
+}
+
+.message-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 8px;
+    margin-left: 0px;
+}
+
+.message-actions .icon {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    visibility: hidden;
+}
+
+.chat-list .message:hover .message-actions .icon {
+    visibility: visible;
+}
+
+
+
+
+
+/* Style for key points titles */
+.chat-list .message .text strong {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;  /* Makes it bolder */
+    font-size: 1.02rem; 
+    letter-spacing: 0.3px;
+    color: var(--text-color); 
+    display: inline-block;
+}
+
+/* Add some spacing after bullet points */
+.chat-list .message .text ul,
+.chat-list .message .text ol {
+    margin-bottom: 12px;
+}
+
+
+.message-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.message-container a:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+::selection {
+    background-color: #ffcc00; /* Change to your desired background color */
+    color: #ffffff; /* Change to your desired text color */
+}
