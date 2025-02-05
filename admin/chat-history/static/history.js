@@ -94,12 +94,26 @@ const loadChatHistory = async (ip) => {
     querySnapshot.forEach(doc => {
   const data = doc.data();
   
-  // Create user message with timestamp
+  // Format the timestamp to be shorter
+  const date = new Date(data.timestamp);
+  const formattedTime = date.toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+  const formattedDay = date.toLocaleString('en-US', {
+    weekday: 'short'
+  });
+  const shortTimestamp = `${formattedTime}, ${formattedDay}`;
+  
+  // Create user message with repositioned timestamp
   const userMessage = document.createElement('div');
   userMessage.classList.add('message', 'outgoing');
   userMessage.innerHTML = `
+    <div class="message-header">
+      <span class="timestamp">${shortTimestamp}</span>
+    </div>
     <div class="message-content">
-      <div class="timestamp">${data.philippinesTime}</div>
       <img class="avatar" src="../images/avatars/user.gif" alt="User avatar">
       <div class="message-container">
         <p class="text">${data.message}</p>
