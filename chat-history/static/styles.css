@@ -1072,3 +1072,28 @@ img {
     height: 100vh;
   }
 }
+
+/* Add or update these styles in styles.css */
+
+/* Style for the panel header title */
+.panel-header h2 {
+  color: #fff; /* Make the "USER HISTORIES" text white */
+}
+
+/* Style for IP list items */
+.ip-item {
+  color: #fff; /* Make the IP address text white */
+}
+
+/* Optional: Add hover state for better visibility */
+.ip-item:hover {
+  background: #3d3d45;
+  color: #fff;
+}
+
+/* Style for active/selected IP */
+.ip-item.active {
+  background: #3d3d45;
+  border-left: 3px solid #10a37f;
+  color: #fff;
+}

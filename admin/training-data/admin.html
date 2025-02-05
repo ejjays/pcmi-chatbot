@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/pcmi-logo.png" type="image/x-icon">
+    <title>PCMI Admin - Training Data Editor</title>
+    <link rel="stylesheet" href="static/admin-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+<body>
+    <div class="container">
+        <!-- Document List View -->
+        <div id="documentList" class="document-list">
+            <h2>Training Documents</h2>
+            <div class="doc-buttons"></div>
+        </div>
+
+        <!-- Editor View -->
+        <div id="editorView" class="editor-view">
+            <div class="toolbar">
+                <button id="menuBtn" class="tool-btn material-symbols-rounded">menu</button>
+                <button id="undoBtn" class="tool-btn material-symbols-rounded">undo</button>
+                <button id="redoBtn" class="tool-btn material-symbols-rounded">redo</button>
+                <button id="searchBtn" class="tool-btn material-symbols-rounded">search</button>
+                <button id="beautifyBtn" class="tool-btn material-symbols-rounded">format_align_left</button>
+                <!-- Added save and reset buttons here as icons -->
+                <button id="saveBtn" class="tool-btn material-symbols-rounded" disabled>save</button>
+                <button id="resetBtn" class="tool-btn material-symbols-rounded" disabled>restart_alt</button>
+                <div id="saveStatus" class="save-status"></div>
+            </div>
+            
+            <div class="editor-section">
+                <textarea id="editor"></textarea>
+                
+                <!-- Search Box -->
+                <div id="searchBox" class="search-box hidden">
+                    <input type="text" id="searchInput" placeholder="Search...">
+                    <button id="prevMatch" class="tool-btn material-symbols-rounded">arrow_upward</button>
+                    <button id="nextMatch" class="tool-btn material-symbols-rounded">arrow_downward</button>
+                    <button id="closeSearch" class="tool-btn material-symbols-rounded">close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="static/admin.js"></script>
+</body>
+</html>

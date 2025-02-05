@@ -1,0 +1,228 @@
+:root {
+            --toolbar-bg: #2c2c2c;
+            --editor-bg: #1e1e1e;
+            --text-color: #d4d4d4;
+            --line-number-color: #858585;
+            --active-btn: #404040;
+            --hover-btn: #3a3a3a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Document List View */
+        .document-list {
+            padding: 20px;
+        }
+
+        .doc-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .doc-btn {
+            background-color: var(--toolbar-bg);
+            border: none;
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .doc-btn:hover {
+            background-color: var(--hover-btn);
+        }
+
+        .doc-btn.active {
+            background-color: var(--active-btn);
+        }
+
+        /* Editor View */
+        .editor-view {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .toolbar {
+            background-color: var(--toolbar-bg);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-btn:hover {
+            background-color: var(--hover-btn);
+        }
+
+        .tool-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .editor-section {
+            display: flex;
+            flex-grow: 1;
+            position: relative;
+            background-color: var(--editor-bg);
+        }
+
+        #editor {
+            flex-grow: 1;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            border: none;
+            padding: 10px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--toolbar-bg);
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .search-box.hidden {
+            display: none;
+        }
+
+        #searchInput {
+            background-color: var(--editor-bg);
+            border: 1px solid var(--line-number-color);
+            color: var(--text-color);
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .fullscreen-editor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+        }
+   .save-status {
+    visibility: hidden;
+    min-width: 250px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px 25px;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.success-message {
+    visibility: visible;
+    opacity: 1;
+    background: #2ecc71;
+}
+
+.error-message {
+    visibility: visible;
+    opacity: 1;
+    background: #e74c3c;
+}
+
+.fade-out {
+    opacity: 0;
+}
+        
+ /* Remove unwanted spaces on mobile */
+@media screen and (max-width: 768px) {
+    /* Remove container padding on mobile */
+    .container {
+        padding: 0;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    /* Make editor view truly full-width */
+    .editor-view {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Adjust toolbar to be edge-to-edge */
+    .toolbar {
+        width: 100%;
+        margin: 0;
+        padding: 8px 4px;
+        border-radius: 0;
+    }
+
+    /* Make editor section full-width */
+    .editor-section {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    /* Adjust document list view for mobile */
+    .document-list {
+        padding: 10px;
+        width: 100%;
+    }
+
+    /* Make sure the editor takes full width */
+    #editor {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+    }
+}
+
+
