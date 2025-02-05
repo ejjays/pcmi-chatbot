@@ -1,0 +1,192 @@
+@media (max-width: 768px) {
+  .admin-container {
+    grid-template-columns: 1fr;
+  }
+
+  .users-list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    border-right: none;
+    border-bottom: 1px solid #4d4d4f;
+    z-index: 100;
+  }
+
+  .panel-header {
+    padding: 10px 20px;
+  }
+
+  .ip-list-container {
+    padding: 10px;
+    height: calc(100vh - 60px);
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ip-list-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ip-item {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 15px;
+    white-space: nowrap;
+  }
+
+  .chat-history {
+    margin-top: 60px;
+    height: calc(100vh - 60px);
+  }
+
+  .history-header {
+    padding: 10px 20px;
+  }
+
+  .message {
+    padding: 15px;
+  }
+
+  .text {
+    font-size: 0.9rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .message-content {
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .ip-item {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
+
+/* Add to styles.css */
+.chat-history.full-width {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .chat-history.full-width {
+    margin-top: 0;
+    height: 100vh;
+  }
+}
+
+/* Add or update these styles in styles.css */
+
+/* Style for the panel header title */
+.panel-header h2 {
+  color: #fff; /* Make the "USER HISTORIES" text white */
+}
+
+/* Style for IP list items */
+.ip-item {
+  color: #fff; /* Make the IP address text white */
+}
+
+/* Optional: Add hover state for better visibility */
+.ip-item:hover {
+  background: #3d3d45;
+  color: #fff;
+}
+
+/* Style for active/selected IP */
+.ip-item.active {
+  background: #3d3d45;
+  border-left: 3px solid #10a37f;
+  color: #fff;
+}
+
+
+
+.message-timestamp {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+  text-align: right;
+}
+
+.chat-history {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.message {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Add to your styles.css */
+.timestamp {
+  font-size: 12px;
+  color: white;
+  margin-bottom: 5px;
+  padding: 2px 5px;
+}
+
+.message-content {
+  position: relative;
+}
+
+.message-header {
+  text-align: right;
+  margin-bottom: 4px;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #afbacc;
+  padding: 2px 8px;
+  margin-right: 50px;
+}
+
+.message.outgoing .message-header {
+  text-align: right;
+}
+
+.message.incoming .message-header {
+  text-align: left;
+}
+
+.ip-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+}
+
+.ip-item {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--secondary-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ip-item:hover {
+  background-color: var(--primary-color);
+}
+
+.ip-item.active {
+  background-color: var(--primary-color);
+  color: #fff;
+}
