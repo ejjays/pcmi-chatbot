@@ -80,6 +80,7 @@ const loadChatHistory = async (ip) => {
     );
 
     const querySnapshot = await getDocs(q);
+  
     
     // Clear container after loading
     chatContainer.innerHTML = '';
@@ -110,7 +111,7 @@ const loadChatHistory = async (ip) => {
         <div class="message-content">
           <div class="header-row">
             <div class="avatar-container">
-              <img class="avatar default-avatar" src="../images/avatars/pcmi-bot.png" alt="Bot avatar">
+              <img class="avatar default-avatar" src="./images/avatars/pcmi-bot.png" alt="Bot avatar">
             </div>
           </div>
           <p class="text">${data.response}</p>
@@ -127,10 +128,14 @@ const loadChatHistory = async (ip) => {
 
   } catch (error) {
     console.error('Error loading chat history:', error);
-    chatContainer.innerHTML = '<div class="error">Error loading chat history</div>';
+    if (error.message.includes('requires an index')) {
+      chatContainer.innerHTML = '<div class="error">Setting up database indexes. Please try again in a few minutes.</div>';
+    } else {
+      chatContainer.innerHTML = '<div class="error">Error loading chat history. Please try again.</div>';
+    }
     selectedUser.textContent = 'Error loading chat history';
   }
-};
+};  
 
 // Load IP list on page load
 loadUserIPs();
