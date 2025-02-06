@@ -978,8 +978,41 @@ img {
 
 
 
+.suggestions-container {
+    margin-top: 20px;
+}
 
-::selection {
-    background-color: #ffcc00; /* Change to your desired background color */
-    color: #ffffff; /* Change to your desired text color */
+.related-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.suggestion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: none;
+}
+
+/* Remove ALL background colors and box shadows */
+.suggestions-container,
+.related-header,
+.suggestion-item {
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+/* Keep text colors and other essential styles */
+.suggestion-text {
+    color: #FFFFFF;
+}
+
+.expand-icon {
+    color: #00E5BE;
 }

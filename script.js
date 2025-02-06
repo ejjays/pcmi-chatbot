@@ -259,67 +259,33 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
     const suggestionsContainer = document.createElement("div");
     suggestionsContainer.classList.add("suggestions-container");
     suggestionsContainer.innerHTML = `
-        <div class="suggestions-header">
-            <h4 class="suggestions-title">Follow-ups:</h4>
-            <div class="suggestions-options">
-                <span class="three-dots material-symbols-rounded">cancel</span>
-                <div class="options-dropdown">
-                    <div class="option-item">Hide</div>
-                </div>
-            </div>
+        <div class="related-header">
+            <span class="related-icon">≡</span>
+            <span class="related-text">Related</span>
         </div>
         <div class="suggestions-list">
             ${suggestions.map(suggestion => `
                 <div class="suggestion-item">
-                    <p class="suggestion-text">${suggestion.trim()}</p>
+                    <span class="suggestion-text">${suggestion.trim()}</span>
+                    <span class="expand-icon">+</span>
                 </div>
-            `).join('<div class="suggestion-separator"></div>')}
+            `).join('')}
         </div>
     `;
 
     messageDiv.appendChild(suggestionsContainer);
 
-    // Add event listeners
-    const threeDots = suggestionsContainer.querySelector('.three-dots');
-    threeDots.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const suggestionsContainer = e.target.closest('.suggestions-container');
-        const messageDiv = suggestionsContainer.closest('.message');
-        
-        suggestionsContainer.classList.add('hiding');
-        
-        setTimeout(() => {
-            suggestionsContainer.style.display = 'none';
-            localStorage.setItem('hideFollowUps', 'true');
-            areFollowUpsHidden = true;
-            
-            const menuIcon = messageDiv.querySelector('.menu-icon');
-            if (menuIcon) {
-                menuIcon.style.display = 'inline-flex';
-            }
-            
-            document.querySelectorAll('.message .menu-icon').forEach(icon => {
-                icon.style.display = 'inline-flex';
-            });
-        }, 400);
-    });
-
-    // Click handlers for suggestions
+    // Add click handlers for suggestions
     messageDiv.querySelectorAll(".suggestion-item").forEach(item => {
         item.addEventListener("click", () => {
             const text = item.querySelector(".suggestion-text").textContent;
             document.querySelector(".typing-input").value = text;
-            
-            document.querySelectorAll(".suggestions-container").forEach(container => {
-                container.remove();
-            });
-            
             document.querySelector("#send-message-button").click();
         });
     });
 };
 
-
+    
 // Show typing effect by displaying words one by one
 const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     const words = text.split(' ');
