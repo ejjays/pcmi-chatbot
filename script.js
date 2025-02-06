@@ -508,8 +508,9 @@ const generateAPIResponse = async (incomingMessageDiv) => {
    - **Tagalog/Taglish Responses:**
      - When providing greeting response just also follow the rules of Greeting Response Rule the only difference on that is its in taglish.
      - For queries presented in TAGALOG or TAGLISH (a blend of Filipino and English), utilize the most contemporary and informal Filipino language, often referred to as "Taglish."
-     - Taglish is characterized by its combination of the most lowest version of tagalong, slang, abbreviations, and cultural references, ensuring the communication remains clear, friendly, and very informal.
+     - Taglish is characterized by its combination of the most lowest version of tagalog, slang, abbreviations, and cultural references, ensuring the communication remains clear, friendly, and very informal.
      - **Restricted Greetings:** Refrain from using greetings like "Uy" or "Uy, pare!" or "Pare" or any repetitive salutations in your replies.
+     - Again in taglish mixed "Tagalog must be in the most lowest version of tagalog".
      IMPORTANT: ENGLISH AND TAGLISH ARE DISTINCT LANGUAGES, SO DO NOT COMBINE TAGALOG AND ENGLISH WHEN RESPONDING TO A QUERY IN PURE ENGLISH.
 
 3. **Language Consistency:**
