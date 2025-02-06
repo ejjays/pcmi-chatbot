@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gateway Choice</title>
+    <title>ADMIN - PANEL</title>
     <style>
         * {
-          -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent;
+            text-align: center;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-            background-color: #121212;
+            overflow: hidden;
             color: #ffffff;
+            display: none; /* Hide body initially */
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
         }
         .container {
             text-align: center;
-            background: #1e1e1e;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            max-width: 400px;
-            width: 90%;
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            max-width: none;
+            width: auto;
         }
         h1 {
             margin-bottom: 30px;
             color: #ffffff;
             font-size: 24px;
+            text-align: center;
         }
         .button {
-            background-color: #007bff;
+            background-color: #3d696e;
             color: white;
+            border: 0.3px #547a7f;
             font-weight: bold;
-            border: none;
             padding: 15px 30px;
             border-radius: 5px;
             cursor: pointer;
@@ -47,19 +48,39 @@
             max-width: 300px;
         }
         .button:hover {
-            background-color: #0056b3;
+            background-color: #6b8c91;
             transform: translateY(-2px);
         }
         .button:active {
             transform: translateY(0);
         }
+        /* Video styling */
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; 
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <video id="background-video" autoplay loop muted playsinline>
+        <source src="images/background.mp4" type="video/mp4"> 
+        Your browser does not support the video tag.
+    </video>
+    <div class="container" id="ui-container">
         <h1>A̢̟̤̖̗͈̦͔̮̦̦̠͐̒̇ͩ͋̃̾̇ͩͧ̋ͭͯ̇̕D̡̦̬̿ͮ̃̔̂͢͝M̻̯̝̣͔̝͎̔ͤ͑̐̇̈̎̉́̎̃̈́̾̈̇̓̑́͞I͕̣̰͎̰͛̏ͨͦ̃͗ͩ̌̽̿̎̂N͚̘̖̻̓́</h1>
         <a href="./admin/training-data/admin.html"><button class="button">Training-Data</button></a>
         <a href="./admin/chat-history/history.html"><button class="button">Chat-History</button></a>
     </div>
+    <script>
+        // Show the body once the video has loaded
+        document.getElementById('background-video').addEventListener('loadeddata', function() {
+            document.body.style.display = 'flex'; // Show body
+        });
+    </script>
 </body>
 </html>
