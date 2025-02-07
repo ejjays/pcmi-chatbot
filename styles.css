@@ -980,6 +980,7 @@ img {
 
 .suggestions-container {
    margin-top: -5px; 
+   color: #fff; 
 }
 
 .related-header {
@@ -1039,4 +1040,62 @@ img {
 
 .expand-icon {
     color: #00E5BE;
+}
+
+
+body.light_mode .suggestions-container {
+    color: #333; /* Dark text for light mode */
+}
+
+body.light_mode .suggestion-item {
+    color: #333;
+    background-color: #f5f5f5; /* Light background for suggestions in light mode */
+}
+
+body.light_mode .related-header {
+    color: #333;
+}
+
+body.light_mode .suggestion-text {
+    color: #333;
+}
+
+body.light_mode .expand-icon {
+    color: #333;
+}
+
+/* Dark mode (default) */
+.related-header .related-text {
+    color: white;
+}
+
+.suggestion-separator {
+    background: var(--text-color);
+    opacity: 0.1;
+}
+
+/* Light mode styles */
+body.light_mode .related-header .related-text {
+    color: var(--text-color); /* Uses the light mode text color variable */
+}
+
+body.light_mode .related-header .related-icon {
+    color: #4285f4; /* Changes icon color in light mode */
+}
+
+body.light_mode .suggestion-separator {
+    background: var(--secondary-color);
+    opacity: 0.5;
+}
+
+body.light_mode .suggestion-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Lighter separator for light mode */
+}
+
+body.light_mode .suggestion-text {
+    color: var(--text-color);
+}
+
+body.light_mode .expand-icon {
+    color: #4285f4;
 }
