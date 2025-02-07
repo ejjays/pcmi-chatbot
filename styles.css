@@ -979,7 +979,7 @@ img {
 
 
 .suggestions-container {
-  /*  margin-top: 20px; */
+   margin-top: -5px; 
 }
 
 .related-header {
@@ -994,13 +994,13 @@ img {
     font-size: 18px; /* Increased from 14px */
     font-weight: 600; /* Made bolder, changed from 500 */
     color: white;
-    text-transform: uppercase; /* Added to make it more title-like */
+  /*  text-transform: uppercase; */
     letter-spacing: 0.5px; /* Added for better title appearance */
 }
 
 .related-icon {
     color: #00E5BE;
-    font-size: 20px; /* Made icon slightly larger to match new text size */
+    font-size: 30px; /* Made icon slightly larger to match new text size */
 }
 
 .suggestion-item {

@@ -259,10 +259,10 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
     const suggestionsContainer = document.createElement("div");
     suggestionsContainer.classList.add("suggestions-container");
     suggestionsContainer.innerHTML = `
-        <div class="related-header">
-            <span class="related-icon">≡</span>
-            <span class="related-text">Related</span>
-        </div>
+    <div class="related-header">
+        <span class="related-icon material-symbols-rounded">stacks</span>
+        <span class="related-text">Related</span>
+    </div>
         <div class="suggestions-list">
             ${suggestions.map(suggestion => `
                 <div class="suggestion-item">
