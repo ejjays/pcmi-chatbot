@@ -979,24 +979,48 @@ img {
 
 
 .suggestions-container {
-    margin-top: 20px;
+  /*  margin-top: 20px; */
 }
 
 .related-header {
     display: flex;
     align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 8px;
+    margin-bottom: 20px; /* Increased margin for better spacing */
+    padding: 0;
+}
+
+.related-text {
+    font-size: 18px; /* Increased from 14px */
+    font-weight: 600; /* Made bolder, changed from 500 */
+    color: white;
+    text-transform: uppercase; /* Added to make it more title-like */
+    letter-spacing: 0.5px; /* Added for better title appearance */
+}
+
+.related-icon {
+    color: #00E5BE;
+    font-size: 20px; /* Made icon slightly larger to match new text size */
 }
 
 .suggestion-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 12px 0;
     cursor: pointer;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: none;
+}
+
+/* Remove border from last suggestion item */
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* Remove border from first suggestion item */
+.suggestion-item:first-child {
+    border-top: none;
 }
 
 /* Remove ALL background colors and box shadows */
