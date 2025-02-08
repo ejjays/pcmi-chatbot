@@ -1099,3 +1099,18 @@ body.light_mode .suggestion-text {
 body.light_mode .expand-icon {
     color: #4285f4;
 }
+
+.text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.text span {
+    display: inline !important;
+    white-space: normal !important;
+}
+
+.signature {
+    display: inline !important;
+    margin-left: 0.25em;
+}

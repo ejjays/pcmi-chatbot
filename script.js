@@ -301,11 +301,11 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
         displayedText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex++];
         // Process the entire accumulated text for bold formatting
         let formattedText = formatFacebookLinks(displayedText)
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1')
-    .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1')
+            .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+            .replace(/— It's all about Jesus!$/, '<span class="signature">— It\'s all about Jesus!</span>');
             
-        // Use innerHTML instead of textContent to preserve HTML formatting
         textElement.innerHTML = formattedText;
         incomingMessageDiv.querySelector(".icon").classList.add("hide");
 
@@ -565,7 +565,7 @@ CRITICAL LANGUAGE RULES:
    **AI:** There are many delicious recipes you can try for dinner, like spaghetti carbonara or grilled chicken. (No need to relate to God in this context unless there's a specific religious dietary consideration mentioned.)
 
   
-  ### Forbidden words: 1. Dont ever mention the exact word "Community" instead of it just say "Family" or "church". 2. Dont say this exact word "wraps up" when referring to an end of any of our church services just say "ends" or "end" for simplicity.
+  ### Forbidden words: 1. Dont ever mention the exact word "Community" instead of it just say "Family" or "church". 2. Dont say this exact word "wraps up" when referring to an end of any of our church services just say "ends" or "end" for simplicity. 3. Dont say this term "close-knit".
 
   ### Responding to Inappropriate Questions
 
@@ -663,37 +663,38 @@ CRITICAL LANGUAGE RULES:
 
   const apiResponse = data.candidates[0].content.parts[0].text;
   
+  let finalResponse = apiResponse;
+if (userMessage.trim().toLowerCase() === "what is intentional discipleship?") {
+    // Remove any trailing spaces or line breaks before adding signature
+    finalResponse = finalResponse.trim() + " — It's all about Jesus!";
+}
+  
   try {
-  const userIP = await getUserIP();
-  const timestamp = new Date().toISOString();
+    const userIP = await getUserIP();
+    const timestamp = new Date().toISOString();
     
-  await addDoc(chatHistoryCollection, {
-    userIP,
-    timestamp,
-    message: userMessage,
-    response: apiResponse,
-    philippinesTime: getPhilippinesTime()
-  });
+    await addDoc(chatHistoryCollection, {
+        userIP,
+        timestamp,
+        message: userMessage,
+        response: finalResponse, // Use finalResponse here
+        philippinesTime: getPhilippinesTime()
+    });
 } catch (error) {
-  console.error('Error storing chat history:', error);
+    console.error('Error storing chat history:', error);
 }
 
 const imageInfo = getImageType(userMessage);
-        
-        if (imageInfo && !displayedImages.has(imageInfo.type)) {
-            // Add the image type to tracked set
-            displayedImages.add(imageInfo.type);
-            
-            // Create message with media
-            const messageElement = createMessageWithMedia(apiResponse, imageInfo.path);
-            incomingMessageDiv.replaceWith(messageElement);
-            const newTextElement = messageElement.querySelector(".text");
-            newTextElement.textContent = '';
-            showTypingEffect(apiResponse, newTextElement, messageElement);
-        } else {
-            // Show response without image
-            showTypingEffect(apiResponse, textElement, incomingMessageDiv);
-        }
+if (imageInfo && !displayedImages.has(imageInfo.type)) {
+    displayedImages.add(imageInfo.type);
+    const messageElement = createMessageWithMedia(finalResponse, imageInfo.path); // Use finalResponse here
+    incomingMessageDiv.replaceWith(messageElement);
+    const newTextElement = messageElement.querySelector(".text");
+    newTextElement.textContent = '';
+    showTypingEffect(finalResponse, newTextElement, messageElement); // Use finalResponse here
+} else {
+    showTypingEffect(finalResponse, textElement, incomingMessageDiv); // Use finalResponse here
+}
     
 // Format Facebook links first
 const formattedResponse = formatFacebookLinks(apiResponse)
