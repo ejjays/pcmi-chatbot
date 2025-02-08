@@ -9,6 +9,7 @@ let areFollowUpsHidden = false;
 let userMessage = null;
 let isResponseGenerating = false; 
 let isDataLoaded = false;
+let displayedImages = new Set();
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { 
@@ -38,18 +39,6 @@ const loadInitialState = () => {
 };
 loadInitialState();
 
-const getUserIP = async () => {
-  try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    return data.ip;
-  } catch (error) {
-    console.error('Error getting IP:', error);
-    return 'unknown';
-  }
-};
-
-
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -63,6 +52,17 @@ function getPhilippinesTime() {
         day: "numeric"
     });
 }
+
+const getUserIP = async () => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    return data.ip;
+  } catch (error) {
+    console.error('Error getting IP:', error);
+    return 'unknown';
+  }
+};
 
 const formatFacebookLinks = (response) => {
   return response;
@@ -108,7 +108,7 @@ const loadTrainingData = async () => {
     }
 };
 
-// Call it immediately
+// Call immediately
 loadTrainingData();
 
 const typingForm = document.querySelector(".typing-form");
@@ -302,7 +302,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
         // Process the entire accumulated text for bold formatting
         let formattedText = formatFacebookLinks(displayedText)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^\*(.*)/gm, '<strong>■ </strong>⁠$1')
+    .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1')
     .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
             
         // Use innerHTML instead of textContent to preserve HTML formatting
@@ -606,6 +606,44 @@ CRITICAL LANGUAGE RULES:
   ${taglishRules}
   
   Previous conversation context and current query: `;
+  
+  const imageKeywords = {
+        location: {
+            keywords: ['location', 'located'],
+            path: 'images/services/church-location.png'
+        },
+        youth: {
+            keywords: ['youth fellowship', 'fellowship', ,'first sunday', 'yf'],
+            path: 'images/services/youth-fellowship.jpg'
+        },
+        cellgroup: {
+            keywords: ['cellgroup', 'kamustahan', 'cell group', 'cg'],
+            path: 'images/services/cellgroup.jpg'
+        },
+        sundayService: {
+            keywords: ['sunday', 'praise and worship', 'service time'],
+            path: 'images/services/sunday-service.gif'
+        },
+        discipleship: {
+            keywords: ['discipleship', 'id', 'life class'],
+            path: 'images/services/discipleship.jpg'
+        },
+        prayerWarrior: {
+            keywords: ['prayer warrior', 'friday'],
+            path: 'images/services/prayer-warrior.jpg'
+        }
+    };
+
+    // Function to check which image should be displayed
+    const getImageType = (message) => {
+        const lowercaseMessage = message.toLowerCase();
+        for (const [type, data] of Object.entries(imageKeywords)) {
+            if (data.keywords.some(keyword => lowercaseMessage.includes(keyword))) {
+                return { type, path: data.path };
+            }
+        }
+        return null;
+    };
 
   try {
     const response = await fetch(API_URL, {
@@ -641,11 +679,28 @@ CRITICAL LANGUAGE RULES:
 } catch (error) {
   console.error('Error storing chat history:', error);
 }
+
+const imageInfo = getImageType(userMessage);
+        
+        if (imageInfo && !displayedImages.has(imageInfo.type)) {
+            // Add the image type to tracked set
+            displayedImages.add(imageInfo.type);
+            
+            // Create message with media
+            const messageElement = createMessageWithMedia(apiResponse, imageInfo.path);
+            incomingMessageDiv.replaceWith(messageElement);
+            const newTextElement = messageElement.querySelector(".text");
+            newTextElement.textContent = '';
+            showTypingEffect(apiResponse, newTextElement, messageElement);
+        } else {
+            // Show response without image
+            showTypingEffect(apiResponse, textElement, incomingMessageDiv);
+        }
     
 // Format Facebook links first
 const formattedResponse = formatFacebookLinks(apiResponse)
   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  .replace(/^\*(.*)/gm, '<strong>■  </strong>⁠$1') 
+  .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1') 
   .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
   
     conversationHistory.push({
@@ -654,54 +709,6 @@ const formattedResponse = formatFacebookLinks(apiResponse)
     });
     
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
-
-    if (isLocationQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, 'images/services/church-location.png');
-  incomingMessageDiv.replaceWith(messageElement);
-  const newTextElement = messageElement.querySelector(".text");
-  newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, messageElement);
-} 
-else if (isYouthQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, 'images/services/youth-fellowship.jpg');
-  incomingMessageDiv.replaceWith(messageElement);
-  const newTextElement = messageElement.querySelector(".text");
-  newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, messageElement);
-}
-else if (isCellGroupQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, 'images/services/cellgroup.jpg');
-  incomingMessageDiv.replaceWith(messageElement);
-  const newTextElement = messageElement.querySelector(".text");
-  newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, messageElement);
-}
-else if (isSundayServiceQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, 'images/services/sunday-service.gif');
-  incomingMessageDiv.replaceWith(messageElement);
-  const newTextElement = messageElement.querySelector(".text");
-  newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, messageElement);
-}
-else if (isDiscipleshipQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, 'images/services/discipleship.jpg');
-  incomingMessageDiv.replaceWith(messageElement);
-  const newTextElement = messageElement.querySelector(".text");
-  newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, messageElement);
-}
-else if (isPrayerWarriorQuery) {
-  const messageElement = createMessageWithMedia(apiResponse, 'images/services/prayer-warrior.jpg');
-  incomingMessageDiv.replaceWith(messageElement);
-  const newTextElement = messageElement.querySelector(".text");
-  newTextElement.textContent = ''; 
-  showTypingEffect(apiResponse, newTextElement, messageElement);
-}
-else {
-  textElement.textContent = '';
-  showTypingEffect(apiResponse, textElement, incomingMessageDiv);
-}
-            
 
   } catch (error) {
     isResponseGenerating = false;
@@ -877,8 +884,11 @@ toggleThemeButton.addEventListener("click", () => {
 // Delete all chats from local storage when button is clicked
 deleteChatButton.addEventListener("click", () => {
   if (confirm("Are you sure you want to delete all the chats?")) {
+    displayedImages.clear(); // Reset tracked images
     localStorage.removeItem("saved-chats");
     localStorage.removeItem("conversation-history");
+    chatContainer.innerHTML = "";
+    document.body.classList.remove("hide-header");
     localStorage.removeItem("hideFollowUps");
     conversationHistory = [];
     areFollowUpsHidden = false; 
