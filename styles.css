@@ -1114,3 +1114,16 @@ body.light_mode .expand-icon {
     display: inline !important;
     margin-left: 0.25em;
 }
+
+.answer-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.verified-badge {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  vertical-align: middle;
+}

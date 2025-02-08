@@ -46,8 +46,8 @@ const updateConversationHistory = (newMessage) => {
     conversationHistory.push(newMessage);
     
     // Keep only the last 5 messages
-    if (conversationHistory.length > 3) {
-        conversationHistory = conversationHistory.slice(-3);
+    if (conversationHistory.length > 5) {
+        conversationHistory = conversationHistory.slice(-5);
     }
     
     // Update localStorage
@@ -150,8 +150,8 @@ const loadDataFromLocalstorage = () => {
     if (savedHistory) {
         conversationHistory = JSON.parse(savedHistory);
         // Ensure only last 5 messages are kept
-        if (conversationHistory.length > 3) {
-            conversationHistory = conversationHistory.slice(-3);
+        if (conversationHistory.length > 5) {
+            conversationHistory = conversationHistory.slice(-5);
             localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
         }
     }
@@ -385,7 +385,10 @@ const createMessageWithMedia = (text, mediaPath) => {
         <img class="avatar default-avatar" src="images/avatars/pcmi-bot.png" alt="Bot avatar">
         <img class="avatar thinking-avatar" src="images/avatars/thinking.gif" alt="Thinking avatar">
       </div>
-      <div class="answer-indicator">Answer</div>
+      <div class="answer-indicator">
+        Answer
+        <img class="verified-badge" src="images/avatars/verified-badge.svg" alt="Verified" style="height: 16px; width: 16px; margin-left: 4px; vertical-align: middle;">
+      </div>
     </div>
     <div class="message-container">
       ${mediaElement}
@@ -775,9 +778,9 @@ const showLoadingAnimation = () => {
                       <div class="loading-bar"></div>
                     </div>
                     <div class="message-actions">
-    <span class="icon material-symbols-rounded">content_copy</span>
-    <span class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
-  </div>
+                      <span class="icon material-symbols-rounded">content_copy</span>
+                      <span class="menu-icon icon material-symbols-rounded" style="display: none;">prompt_suggestion</span>
+                    </div>
                   </div>
                 </div>`;
     const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
