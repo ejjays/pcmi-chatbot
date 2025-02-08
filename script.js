@@ -1,23 +1,25 @@
-let conversationFlowRules = ''; 
+let conversationFlowRules = '';
 let aiRules = '';
 let churchKnowledge = '';
 let conversationHistory = [];
 let linkFormatRules = '';
 let taglishRules = '';
 let userIsScrolling = false;
-let areFollowUpsHidden = false; 
+let areFollowUpsHidden = false;
 let userMessage = null;
-let isResponseGenerating = false; 
+let isResponseGenerating = false;
 let isDataLoaded = false;
 let displayedImages = new Set();
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  collection, 
-  addDoc 
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    collection,
+    addDoc
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
 // Firebase configuration
@@ -39,6 +41,19 @@ const loadInitialState = () => {
 };
 loadInitialState();
 
+const updateConversationHistory = (newMessage) => {
+    // Add the new message
+    conversationHistory.push(newMessage);
+    
+    // Keep only the last 5 messages
+    if (conversationHistory.length > 3) {
+        conversationHistory = conversationHistory.slice(-3);
+    }
+    
+    // Update localStorage
+    localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
+};
+
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -54,18 +69,18 @@ function getPhilippinesTime() {
 }
 
 const getUserIP = async () => {
-  try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    return data.ip;
-  } catch (error) {
-    console.error('Error getting IP:', error);
-    return 'unknown';
-  }
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error('Error getting IP:', error);
+        return 'unknown';
+    }
 };
 
 const formatFacebookLinks = (response) => {
-  return response;
+    return response;
 };
 
 // Load Training-base
@@ -84,13 +99,13 @@ const loadTrainingData = async () => {
             getDoc(doc(db, 'training-data', 'conversation-flow')),
             getDoc(doc(db, 'training-data', 'taglish-vocabulary'))
         ]);
-        
+
         // Check if documents exist
-        if (!churchKnowledgeDoc.exists() || 
-            !aiRulesDoc.exists() || 
-            !linkFormatRulesDoc.exists() || 
+        if (!churchKnowledgeDoc.exists() ||
+            !aiRulesDoc.exists() ||
+            !linkFormatRulesDoc.exists() ||
             !conversationFlowDoc.exists() ||
-            !taglishVocabularyDoc.exists()) {  
+            !taglishVocabularyDoc.exists()) {
             throw new Error("Some training data documents are missing");
         }
 
@@ -99,7 +114,7 @@ const loadTrainingData = async () => {
         aiRules = aiRulesDoc.data().content;
         linkFormatRules = linkFormatRulesDoc.data().content;
         conversationFlowRules = conversationFlowDoc.data().content;
-        taglishRules = taglishVocabularyDoc.data().content;  
+        taglishRules = taglishVocabularyDoc.data().content;
 
         isDataLoaded = true;
         console.log('Training data loaded successfully');
@@ -123,50 +138,55 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
 
 // Load theme and chat data from local storage on page load
 const loadDataFromLocalstorage = () => {
-  const savedChats = localStorage.getItem("saved-chats");
-  const savedHistory = localStorage.getItem("conversation-history");
-  const isLightMode = (localStorage.getItem("themeColor") === "light_mode");
+    const savedChats = localStorage.getItem("saved-chats");
+    const savedHistory = localStorage.getItem("conversation-history");
+    const isLightMode = (localStorage.getItem("themeColor") === "light_mode");
 
-  // Reset the follow-ups hidden state when loading
-  areFollowUpsHidden = false;
-  localStorage.removeItem('hideFollowUps');
+    // Reset the follow-ups hidden state when loading
+    areFollowUpsHidden = false;
+    localStorage.removeItem('hideFollowUps');
 
-  // Load conversation history if exists
-  if (savedHistory) {
-    conversationHistory = JSON.parse(savedHistory);
-  }
+    // Load conversation history if exists
+    if (savedHistory) {
+        conversationHistory = JSON.parse(savedHistory);
+        // Ensure only last 5 messages are kept
+        if (conversationHistory.length > 3) {
+            conversationHistory = conversationHistory.slice(-3);
+            localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
+        }
+    }
 
-  chatContainer.innerHTML = savedChats || '';
-  document.body.classList.toggle("hide-header", savedChats);
+    chatContainer.innerHTML = savedChats || '';
+    document.body.classList.toggle("hide-header", savedChats);
 
-  chatContainer.scrollTo(0, chatContainer.scrollHeight);
+    chatContainer.scrollTo(0, chatContainer.scrollHeight);
 }
 
 const createMessageElement = (content, ...classes) => {
-  const div = document.createElement("div");
-  div.classList.add("message", ...classes);
-  
-  const isAdminPanel = window.location.pathname.includes('admin');
-  
-  let messageHTML;
-  if (isAdminPanel) {
-    const timestamp = new Date().toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-      weekday: "short"
-    });
-    
-    messageHTML = `
+    const div = document.createElement("div");
+    div.classList.add("message", ...classes);
+
+    const isAdminPanel = window.location.pathname.includes('admin');
+
+    let messageHTML;
+    if (isAdminPanel) {
+        const timestamp = new Date().toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+            weekday: "short"
+        });
+
+        messageHTML = `
       <div class="message-timestamp">${timestamp}</div>
       ${content}
     `;
-  } else {
-    messageHTML = content;
-  }
-  
-  div.innerHTML = messageHTML;
-  return div;
+    } else {
+        messageHTML = content;
+    }
+
+    div.innerHTML = messageHTML;
+    return div;
 }
 
 const customInitialFollowUps = {
@@ -235,11 +255,15 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
         try {
             const response = await fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({
                     contents: [{
                         role: "user",
-                        parts: [{ text: suggestionsPrompt }]
+                        parts: [{
+                            text: suggestionsPrompt
+                        }]
                     }]
                 })
             });
@@ -252,13 +276,13 @@ const displaySuggestions = async (messageDiv, aiResponse) => {
             suggestions = data.candidates[0].content.parts[0].text.split("|");
         } catch (error) {
             console.error("Error generating suggestions:", error);
-            return; 
+            return;
         }
     }
 
     const suggestionsContainer = document.createElement("div");
-suggestionsContainer.classList.add("suggestions-container");
-suggestionsContainer.innerHTML = `
+    suggestionsContainer.classList.add("suggestions-container");
+    suggestionsContainer.innerHTML = `
     <div class="related-header">
         <span class="related-icon material-symbols-rounded">stacks</span>
         <span class="related-text">Related</span>
@@ -285,7 +309,7 @@ suggestionsContainer.innerHTML = `
     });
 };
 
-    
+
 // Show typing effect by displaying words one by one
 const showTypingEffect = (text, textElement, incomingMessageDiv) => {
     const words = text.split(' ');
@@ -305,7 +329,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
             .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1')
             .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
             .replace(/— It's all about Jesus!$/, '<span class="signature">— It\'s all about Jesus!</span>');
-            
+
         textElement.innerHTML = formattedText;
         incomingMessageDiv.querySelector(".icon").classList.add("hide");
 
@@ -314,7 +338,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
             isResponseGenerating = false;
             incomingMessageDiv.querySelector(".icon").classList.remove("hide");
             localStorage.setItem("saved-chats", chatContainer.innerHTML);
-            
+
             if (!areFollowUpsHidden && text.trim() !== "I'm sorry, I can't answer that.") {
                 setTimeout(() => {
                     displaySuggestions(incomingMessageDiv, text);
@@ -326,7 +350,7 @@ const showTypingEffect = (text, textElement, incomingMessageDiv) => {
                 }
             }
         }
-        
+
         if (!userIsScrolling) {
             chatContainer.scrollTo(0, chatContainer.scrollHeight);
         }
@@ -341,19 +365,21 @@ chatContainer.addEventListener('scroll', () => {
     chatContainer.scrollTimeout = setTimeout(() => {
         userIsScrolling = false;
     }, 1000);
-}, { passive: true });
+}, {
+    passive: true
+});
 
 
 
 const createMessageWithMedia = (text, mediaPath) => {
-  const isVideo = mediaPath.endsWith('.mp4');
-  const mediaElement = isVideo ? 
-    `<video class="response-image" autoplay loop muted playsinline>
+    const isVideo = mediaPath.endsWith('.mp4');
+    const mediaElement = isVideo ?
+        `<video class="response-image" autoplay loop muted playsinline>
        <source src="${mediaPath}" type="video/mp4">
-     </video>` : 
-    `<img class="response-image" src="${mediaPath}" alt="Church media">`;
+     </video>` :
+        `<img class="response-image" src="${mediaPath}" alt="Church media">`;
 
-  const messageContent = `<div class="message-content">
+    const messageContent = `<div class="message-content">
     <div class="header-row">
       <div class="avatar-container">
         <img class="avatar default-avatar" src="images/avatars/pcmi-bot.png" alt="Bot avatar">
@@ -371,18 +397,18 @@ const createMessageWithMedia = (text, mediaPath) => {
     </div>
   </div>`;
 
-  const messageElement = createMessageElement(messageContent, "incoming");
-  
-  const messageActions = messageElement.querySelector('.message-actions');
-  if (messageActions) {
-    const copyButton = messageActions.querySelector('.icon');
-    const menuButton = messageActions.querySelector('.menu-icon');
-    
-    copyButton.addEventListener('click', () => copyMessage(copyButton));
-    menuButton.addEventListener('click', () => toggleFollowUps(menuButton));
-  }
+    const messageElement = createMessageElement(messageContent, "incoming");
 
-  return messageElement;
+    const messageActions = messageElement.querySelector('.message-actions');
+    if (messageActions) {
+        const copyButton = messageActions.querySelector('.icon');
+        const menuButton = messageActions.querySelector('.menu-icon');
+
+        copyButton.addEventListener('click', () => copyMessage(copyButton));
+        menuButton.addEventListener('click', () => toggleFollowUps(menuButton));
+    }
+
+    return messageElement;
 }
 
 const getCustomErrorMessage = (error) => {
@@ -403,66 +429,68 @@ const getCustomErrorMessage = (error) => {
 };
 
 const isInappropriateContent = (message) => {
-    const inappropriateKeywords = ["badword1", "badword2", "offensive phrase"]; 
+    const inappropriateKeywords = ["badword1", "badword2", "offensive phrase"];
     return inappropriateKeywords.some(keyword => message.toLowerCase().includes(keyword));
 };
 
 // Fetch response from the API based on user message
 const generateAPIResponse = async (incomingMessageDiv) => {
     const textElement = incomingMessageDiv.querySelector(".text");
-    
+
     if (!isDataLoaded) {
         textElement.textContent = "Still loading training data, please wait...";
         return;
     }
-    
+
     // Check inappropriate content
     if (isInappropriateContent(userMessage)) {
         textElement.textContent = "I'm sorry, I can't answer that.";
         isResponseGenerating = false;
         incomingMessageDiv.classList.remove("loading");
-        
+
         // Save to conversation history
-        conversationHistory.push({
-            role: "assistant",
-            content: "I'm sorry, I can't answer that."
-        });
+        updateConversationHistory({
+    role: "assistant",
+    content: "I'm sorry, I can't answer that."
+});
         localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
-        
+
         return;
     }
-    
-  // Location/service related keywords 
-  const isLocationQuery = userMessage.toLowerCase().includes('location') || 
-                         userMessage.toLowerCase().includes('locate') ||
-                         userMessage.toLowerCase().includes('located');
 
-  const isYouthQuery = userMessage.toLowerCase().includes('youth') || 
-                      userMessage.toLowerCase().includes('fellowship') ||
-                      userMessage.toLowerCase().includes('young people');
+    // Location/service related keywords 
+    const isLocationQuery = userMessage.toLowerCase().includes('location') ||
+        userMessage.toLowerCase().includes('locate') ||
+        userMessage.toLowerCase().includes('located');
 
-  const isCellGroupQuery = userMessage.toLowerCase().includes('cell') || 
-                          userMessage.toLowerCase().includes('kamustahan') ||
-                          userMessage.toLowerCase().includes('online cellgroup');
+    const isYouthQuery = userMessage.toLowerCase().includes('youth') ||
+        userMessage.toLowerCase().includes('fellowship') ||
+        userMessage.toLowerCase().includes('young people');
 
-  const isSundayServiceQuery = userMessage.toLowerCase().includes('sunday') || 
-                              userMessage.toLowerCase().includes('worship') ||
-                              userMessage.toLowerCase().includes('service time');
-                              
-  const isDiscipleshipQuery = userMessage.toLowerCase().includes('discipleship') || 
-                             userMessage.toLowerCase().includes('disciple') ||
-                             userMessage.toLowerCase().includes('life class');    
-    const isPrayerWarriorQuery = userMessage.toLowerCase().includes('prayer warrior') || 
-                            userMessage.toLowerCase().includes('prayer warrior') ||
-                            userMessage.toLowerCase().includes('friday');                         
-  // Create the conversation payload
-  const messages = conversationHistory.map(msg => ({
-    role: msg.role,
-    parts: [{ text: msg.content }]
-  }));
+    const isCellGroupQuery = userMessage.toLowerCase().includes('cell') ||
+        userMessage.toLowerCase().includes('kamustahan') ||
+        userMessage.toLowerCase().includes('online cellgroup');
 
-  // Add current context and rules
-  const contextPrefix = `
+    const isSundayServiceQuery = userMessage.toLowerCase().includes('sunday') ||
+        userMessage.toLowerCase().includes('worship') ||
+        userMessage.toLowerCase().includes('service time');
+
+    const isDiscipleshipQuery = userMessage.toLowerCase().includes('discipleship') ||
+        userMessage.toLowerCase().includes('disciple') ||
+        userMessage.toLowerCase().includes('life class');
+    const isPrayerWarriorQuery = userMessage.toLowerCase().includes('prayer warrior') ||
+        userMessage.toLowerCase().includes('prayer warrior') ||
+        userMessage.toLowerCase().includes('friday');
+    // Create the conversation payload
+    const messages = conversationHistory.map(msg => ({
+        role: msg.role,
+        parts: [{
+            text: msg.content
+        }]
+    }));
+
+    // Add current context and rules
+    const contextPrefix = `
   Current Date and Time in Philippines: ${getPhilippinesTime()}
   
 ### ALWAYS VERY SIMPLE LANGUAGE:
@@ -604,14 +632,14 @@ CRITICAL LANGUAGE RULES:
   ${taglishRules}
   
   Previous conversation context and current query: `;
-  
-  const imageKeywords = {
+
+    const imageKeywords = {
         location: {
             keywords: ['location', 'located'],
             path: 'images/services/church-location.png'
         },
         youth: {
-            keywords: ['youth fellowship', 'fellowship', ,'first sunday', 'yf'],
+            keywords: ['youth fellowship', 'fellowship', , 'first sunday', 'yf'],
             path: 'images/services/youth-fellowship.jpg'
         },
         cellgroup: {
@@ -637,97 +665,101 @@ CRITICAL LANGUAGE RULES:
         const lowercaseMessage = message.toLowerCase();
         for (const [type, data] of Object.entries(imageKeywords)) {
             if (data.keywords.some(keyword => lowercaseMessage.includes(keyword))) {
-                return { type, path: data.path };
+                return {
+                    type,
+                    path: data.path
+                };
             }
         }
         return null;
     };
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        contents: [
-          ...messages,
-          { 
-            role: "user", 
-            parts: [{ text: contextPrefix + userMessage }] 
-          }
-        ]
-      }),
-    });
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [
+                    ...messages,
+                    {
+                        role: "user",
+                        parts: [{
+                            text: contextPrefix + userMessage
+                        }]
+                    }
+                ]
+            }),
+        });
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error.message);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error.message);
 
-  const apiResponse = data.candidates[0].content.parts[0].text;
-  
-  let finalResponse = apiResponse;
-if (userMessage.trim().toLowerCase() === "what is intentional discipleship?") {
-    // Remove any trailing spaces or line breaks before adding signature
-    finalResponse = finalResponse.trim() + " — It's all about Jesus!";
-}
-  
-  try {
-    const userIP = await getUserIP();
-    const timestamp = new Date().toISOString();
-    
-    await addDoc(chatHistoryCollection, {
-        userIP,
-        timestamp,
-        message: userMessage,
-        response: finalResponse, // Use finalResponse here
-        philippinesTime: getPhilippinesTime()
-    });
-} catch (error) {
-    console.error('Error storing chat history:', error);
-}
+        const apiResponse = data.candidates[0].content.parts[0].text;
 
-const imageInfo = getImageType(userMessage);
-if (imageInfo && !displayedImages.has(imageInfo.type)) {
-    displayedImages.add(imageInfo.type);
-    const messageElement = createMessageWithMedia(finalResponse, imageInfo.path); // Use finalResponse here
-    incomingMessageDiv.replaceWith(messageElement);
-    const newTextElement = messageElement.querySelector(".text");
-    newTextElement.textContent = '';
-    showTypingEffect(finalResponse, newTextElement, messageElement); // Use finalResponse here
-} else {
-    showTypingEffect(finalResponse, textElement, incomingMessageDiv); // Use finalResponse here
-}
-    
-// Format Facebook links first
-const formattedResponse = formatFacebookLinks(apiResponse)
-  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-  .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1') 
-  .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-  
-    conversationHistory.push({
-      role: "assistant",
-      content: apiResponse
-    });
-    
-    localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
+        let finalResponse = apiResponse;
+        if (userMessage.trim().toLowerCase() === "what is intentional discipleship?") {
+            // Remove any trailing spaces or line breaks before adding signature
+            finalResponse = finalResponse.trim() + " — It's all about Jesus!";
+        }
 
-  } catch (error) {
-    isResponseGenerating = false;
-    const customErrorMessage = getCustomErrorMessage(error);
-    textElement.innerText = customErrorMessage;
-    textElement.parentElement.closest(".message").classList.add("error");
-}
-   finally {
-    incomingMessageDiv.classList.remove("loading");
-    
-    const answerIndicator = incomingMessageDiv.querySelector('.answer-indicator');
-    if (answerIndicator) {
-      answerIndicator.textContent = "Answer";
+        try {
+            const userIP = await getUserIP();
+            const timestamp = new Date().toISOString();
+
+            await addDoc(chatHistoryCollection, {
+                userIP,
+                timestamp,
+                message: userMessage,
+                response: finalResponse, // Use finalResponse here
+                philippinesTime: getPhilippinesTime()
+            });
+        } catch (error) {
+            console.error('Error storing chat history:', error);
+        }
+
+        const imageInfo = getImageType(userMessage);
+        if (imageInfo && !displayedImages.has(imageInfo.type)) {
+            displayedImages.add(imageInfo.type);
+            const messageElement = createMessageWithMedia(finalResponse, imageInfo.path); // Use finalResponse here
+            incomingMessageDiv.replaceWith(messageElement);
+            const newTextElement = messageElement.querySelector(".text");
+            newTextElement.textContent = '';
+            showTypingEffect(finalResponse, newTextElement, messageElement); // Use finalResponse here
+        } else {
+            showTypingEffect(finalResponse, textElement, incomingMessageDiv); // Use finalResponse here
+        }
+
+        // Format Facebook links first
+        const formattedResponse = formatFacebookLinks(apiResponse)
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/^\*(.*)/gm, '<strong>• </strong>⁠$1')
+            .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+
+        updateConversationHistory({
+    role: "assistant",
+    content: apiResponse
+});
+
+    } catch (error) {
+        isResponseGenerating = false;
+        const customErrorMessage = getCustomErrorMessage(error);
+        textElement.innerText = customErrorMessage;
+        textElement.parentElement.closest(".message").classList.add("error");
+    } finally {
+        incomingMessageDiv.classList.remove("loading");
+
+        const answerIndicator = incomingMessageDiv.querySelector('.answer-indicator');
+        if (answerIndicator) {
+            answerIndicator.textContent = "Answer";
+        }
     }
-  }
 }
 
 // Show loading animation while waiting for API response
 const showLoadingAnimation = () => {
-  const html = `<div class="message-content">
+    const html = `<div class="message-content">
                   <div class="header-row">
                     <div class="avatar-container">
                       <img class="avatar default-avatar" src="images/avatars/pcmi-bot.png" alt="Bot avatar">
@@ -748,43 +780,43 @@ const showLoadingAnimation = () => {
   </div>
                   </div>
                 </div>`;
-const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
-  
-  const messageActions = incomingMessageDiv.querySelector('.message-actions');
-  if (messageActions) {
-    const copyButton = messageActions.querySelector('.icon');
-    const menuButton = messageActions.querySelector('.menu-icon');
-    
-    copyButton.addEventListener('click', () => copyMessage(copyButton));
-    menuButton.addEventListener('click', () => toggleFollowUps(menuButton));
-  }
+    const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
 
-  chatContainer.appendChild(incomingMessageDiv);
-  chatContainer.scrollTo(0, chatContainer.scrollHeight);
-  generateAPIResponse(incomingMessageDiv);
+    const messageActions = incomingMessageDiv.querySelector('.message-actions');
+    if (messageActions) {
+        const copyButton = messageActions.querySelector('.icon');
+        const menuButton = messageActions.querySelector('.menu-icon');
+
+        copyButton.addEventListener('click', () => copyMessage(copyButton));
+        menuButton.addEventListener('click', () => toggleFollowUps(menuButton));
+    }
+
+    chatContainer.appendChild(incomingMessageDiv);
+    chatContainer.scrollTo(0, chatContainer.scrollHeight);
+    generateAPIResponse(incomingMessageDiv);
 }
 
 // Copy message text to clipboard
 const copyMessage = (copyButton) => {
-  const messageContainer = copyButton.closest('.message-container');
-  const messageText = messageContainer.querySelector(".text").innerText;
+    const messageContainer = copyButton.closest('.message-container');
+    const messageText = messageContainer.querySelector(".text").innerText;
 
-  navigator.clipboard.writeText(messageText).then(() => {
-    copyButton.innerText = "done"; 
-    setTimeout(() => copyButton.innerText = "content_copy", 1000); // Revert icon after 1 second
-  }).catch(err => {
-    console.error('Failed to copy text: ', err);
-  });
+    navigator.clipboard.writeText(messageText).then(() => {
+        copyButton.innerText = "done";
+        setTimeout(() => copyButton.innerText = "content_copy", 1000); // Revert icon after 1 second
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
 }
 
 const toggleFollowUps = async (menuButton) => {
     const messageDiv = menuButton.closest('.message');
     const textElement = messageDiv.querySelector('.text');
-    
+
     if (isResponseGenerating) return;
 
     try {
-        
+
         const existingSuggestions = messageDiv.querySelector('.suggestions-container');
         if (existingSuggestions) {
             existingSuggestions.remove();
@@ -793,9 +825,9 @@ const toggleFollowUps = async (menuButton) => {
         // Reset the hidden state when showing suggestions
         areFollowUpsHidden = false;
         localStorage.removeItem('hideFollowUps');
-        
+
         menuButton.style.display = 'none';
-        
+
         if (textElement && textElement.textContent) {
             await displaySuggestions(messageDiv, textElement.textContent);
         }
@@ -807,24 +839,24 @@ const toggleFollowUps = async (menuButton) => {
 };
 
 window.copyMessage = copyMessage;
-   window.toggleFollowUps = toggleFollowUps;
+window.toggleFollowUps = toggleFollowUps;
 
 const hideFollowUps = (suggestionsContainer) => {
     const messageDiv = suggestionsContainer.closest('.message');
     const menuButton = messageDiv.querySelector('.menu-icon');
-    
+
     suggestionsContainer.classList.add('hiding');
-    
+
     // Set global state to hide suggestions
     areFollowUpsHidden = true;
     localStorage.setItem('hideFollowUps', 'true');
-    
+
     setTimeout(() => {
         suggestionsContainer.remove();
         if (menuButton) {
             menuButton.style.display = 'inline-flex';
         }
-        
+
         // Show menu icons for all messages
         document.querySelectorAll('.message .menu-icon').forEach(icon => {
             icon.style.display = 'inline-flex';
@@ -834,79 +866,79 @@ const hideFollowUps = (suggestionsContainer) => {
 
 // Handle sending outgoing chat messages
 const handleOutgoingChat = () => {
-  document.querySelectorAll(".suggestions-container").forEach(container => {
-    container.remove();
-  });
+    document.querySelectorAll(".suggestions-container").forEach(container => {
+        container.remove();
+    });
 
-  userMessage = typingForm.querySelector(".typing-input").value.trim() || userMessage;
-  if(!userMessage || isResponseGenerating) return;
+    userMessage = typingForm.querySelector(".typing-input").value.trim() || userMessage;
+    if (!userMessage || isResponseGenerating) return;
 
-  isResponseGenerating = true;
+    isResponseGenerating = true;
 
-  // Add user message to conversation history
-  conversationHistory.push({
+    // Add user message to conversation history
+    updateConversationHistory({
     role: "user",
     content: userMessage
-  });
+});
 
-  // Keep the user message structure simple and inline
-  const html = `<div class="message-content">
+    // Keep the user message structure simple and inline
+    const html = `<div class="message-content">
                 <img class="avatar" src="images/avatars/user.gif" alt="User avatar">
                 <div class="message-container">
                   <p class="text"></p>
                 </div>
               </div>`;
 
-  const outgoingMessageDiv = createMessageElement(html, "outgoing");
-  outgoingMessageDiv.querySelector(".text").innerText = userMessage;
-  chatContainer.appendChild(outgoingMessageDiv);
-  
-  typingForm.reset(); // Clear input field
-  
-  inputWrapper.classList.remove("expanded");
-  actionButtons.classList.remove("hide");
-  
-  document.body.classList.add("hide-header");
-  chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to the bottom
-  setTimeout(showLoadingAnimation, 500); // Show loading animation after a delay
+    const outgoingMessageDiv = createMessageElement(html, "outgoing");
+    outgoingMessageDiv.querySelector(".text").innerText = userMessage;
+    chatContainer.appendChild(outgoingMessageDiv);
+
+    typingForm.reset(); // Clear input field
+
+    inputWrapper.classList.remove("expanded");
+    actionButtons.classList.remove("hide");
+
+    document.body.classList.add("hide-header");
+    chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to the bottom
+    setTimeout(showLoadingAnimation, 500); // Show loading animation after a delay
 }
 const waveContainer = document.querySelector(".theme-wave-container");
 const waveElement = document.querySelector(".theme-wave");
 
 toggleThemeButton.addEventListener("click", () => {
-  const isLightMode = document.body.classList.contains("light_mode");
-  document.body.classList.toggle("light_mode");
-  localStorage.setItem("themeColor", isLightMode ? "dark_mode" : "light_mode");
-  toggleThemeButton.innerText = isLightMode ? "light_mode" : "dark_mode";
+    const isLightMode = document.body.classList.contains("light_mode");
+    document.body.classList.toggle("light_mode");
+    localStorage.setItem("themeColor", isLightMode ? "dark_mode" : "light_mode");
+    toggleThemeButton.innerText = isLightMode ? "light_mode" : "dark_mode";
 });
 
 // Delete all chats from local storage when button is clicked
 deleteChatButton.addEventListener("click", () => {
-  if (confirm("Are you sure you want to delete all the chats?")) {
-    displayedImages.clear(); // Reset tracked images
-    localStorage.removeItem("saved-chats");
-    localStorage.removeItem("conversation-history");
-    chatContainer.innerHTML = "";
-    document.body.classList.remove("hide-header");
-    localStorage.removeItem("hideFollowUps");
-    conversationHistory = [];
-    areFollowUpsHidden = false; 
-    loadDataFromLocalstorage();
-  }
+    if (confirm("Are you sure you want to delete all the chats?")) {
+        displayedImages.clear(); // Reset tracked images
+        localStorage.removeItem("saved-chats");
+        localStorage.removeItem("conversation-history");
+        chatContainer.innerHTML = "";
+        document.body.classList.remove("hide-header");
+        localStorage.removeItem("hideFollowUps");
+        conversationHistory = [];
+        areFollowUpsHidden = false;
+        loadDataFromLocalstorage();
+    }
 });
 
 // Set userMessage and handle outgoing chat when a suggestion is clicked
 suggestions.forEach(suggestion => {
-  suggestion.addEventListener("click", () => {
-    userMessage = suggestion.querySelector(".text").innerText;
-    handleOutgoingChat();
-  });
+    suggestion.addEventListener("click", () => {
+        userMessage = suggestion.querySelector(".text").innerText;
+        handleOutgoingChat();
+    });
 });
 
 // Prevent default form submission and handle outgoing chat
 typingForm.addEventListener("submit", (e) => {
-  e.preventDefault(); 
-  handleOutgoingChat();
+    e.preventDefault();
+    handleOutgoingChat();
 });
 
 loadDataFromLocalstorage();
@@ -916,47 +948,51 @@ const actionButtons = document.querySelector(".action-buttons");
 const typingInput = document.querySelector(".typing-input");
 
 typingInput.addEventListener("focus", () => {
-  inputWrapper.classList.add("expanded");
-  actionButtons.classList.add("hide");
+    inputWrapper.classList.add("expanded");
+    actionButtons.classList.add("hide");
 });
 
 typingInput.addEventListener("blur", () => {
-  // Only collapse if there's no text
-  if (typingInput.value.length === 0 && !isResponseGenerating) {
-    inputWrapper.classList.remove("expanded");
-    actionButtons.classList.remove("hide");
-  }
+    // Only collapse if there's no text
+    if (typingInput.value.length === 0 && !isResponseGenerating) {
+        inputWrapper.classList.remove("expanded");
+        actionButtons.classList.remove("hide");
+    }
 });
 
 typingInput.addEventListener("input", () => {
-  // Keep expanded while typing
-  if (typingInput.value.length > 0) {
-    inputWrapper.classList.add("expanded");
-    actionButtons.classList.add("hide");
-  }
+    // Keep expanded while typing
+    if (typingInput.value.length > 0) {
+        inputWrapper.classList.add("expanded");
+        actionButtons.classList.add("hide");
+    }
 });
 
 // Simplified event listeners
 let windowHeight = window.innerHeight;
 window.addEventListener('resize', () => {
-  if (window.innerHeight > windowHeight) {
-    if (typingInput.value.length === 0) {
-      inputWrapper.classList.remove("expanded");
-      actionButtons.classList.remove("hide");
+    if (window.innerHeight > windowHeight) {
+        if (typingInput.value.length === 0) {
+            inputWrapper.classList.remove("expanded");
+            actionButtons.classList.remove("hide");
+        }
     }
-  }
-  windowHeight = window.innerHeight;
-}, { passive: true });
+    windowHeight = window.innerHeight;
+}, {
+    passive: true
+});
 
 // Only handle back button
 window.addEventListener('popstate', (e) => {
-  e.preventDefault();
-  history.pushState(null, null, window.location.href);
+    e.preventDefault();
+    history.pushState(null, null, window.location.href);
 });
 
 // For Android back button
 if (window.navigator.userAgent.match(/Android/i)) {
-  document.addEventListener('backbutton', (e) => {
-    e.preventDefault();
-  }, { passive: true });
+    document.addEventListener('backbutton', (e) => {
+        e.preventDefault();
+    }, {
+        passive: true
+    });
 }
