@@ -85,6 +85,51 @@ const updateConversationHistory = (newMessage) => {
     localStorage.setItem("conversation-history", JSON.stringify(conversationHistory));
 };
 
+
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+
+    // Check if it's a Facebook link
+    if (link.href && link.href.includes('facebook.com')) {
+        e.preventDefault(); // Prevent default link behavior
+        
+        // For iOS
+        if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
+            window.location.href = `fb://profile/${getFacebookId(link.href)}`;
+            
+            // Fallback to opening in system browser if FB app isn't installed
+            setTimeout(() => {
+                window.location.href = link.href;
+            }, 2000);
+        } 
+        // For Android
+        else if (navigator.userAgent.match(/Android/i)) {
+            window.location.href = `intent://${link.href.replace(/^https?:\/\//, '')}#Intent;package=com.facebook.katana;scheme=https;end`;
+        }
+        // Fallback for other platforms
+        else {
+            window.open(link.href, '_system');
+        }
+    }
+});
+
+// Helper function to extract Facebook ID from URL
+const getFacebookId = (url) => {
+    const parts = url.split('/');
+    return parts[parts.length - 1].split('?')[0];
+};
+
+// Add this style dynamically
+const style = document.createElement('style');
+style.textContent = `
+    .facebook-link {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+    }
+`;
+document.head.appendChild(style);
+
 // Real-time Date & Time
 function getPhilippinesTime() {
     return new Date().toLocaleString("en-US", {
@@ -112,10 +157,9 @@ const getUserIP = async () => {
 
 // Update the formatFacebookLinks function in script.js
 const formatFacebookLinks = (response) => {
-    // Replace Facebook link patterns with properly formatted links that open in system browser
     return response.replace(
         /<a href="(https:\/\/(?:www\.)?facebook\.com\/[^"]+)"[^>]*>([^<]+)<\/a>/g,
-        '<a href="$1" target="_system" rel="noopener noreferrer">$2</a>'
+        '<a href="$1" target="_blank" rel="noopener noreferrer" class="facebook-link">$2</a>'
     );
 };
 
