@@ -35,6 +35,9 @@
 body {
   background: var(--primary-color);
   transition: background-color 0.5s ease;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 .chat-list .message .text,
