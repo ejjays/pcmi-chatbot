@@ -535,7 +535,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
 
 
 ### **intensional Discipleship Details**: Intentional Discipleship: Intentional Discipleship is a school of leaders that covers deep topics to EQUIP our leaders and future leaders. This teaches discipline, deep Bible study, and  step-by-step instruction in personal evangelism. It also guide participants through deep teachings discussions and after they completed the 6 stages class, they are now be prepared for practical applications to WIN SOULS.
-It is led by experienced church member (Pastor Edong and his wife Sis. Camil).
+It is led by experienced church member (Pastor Edong and his wife Pastora Camil).
 
 ### Winning Souls Rule
 

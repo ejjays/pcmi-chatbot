@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Script Loading Test</title>
+</head>
+<body>
+    <h1>Testing Dynamic Script Loading from Firestore</h1>
+
+    <script type="module">
+        // Import the Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpFnEoKWRQG1fXXQ282hdwjGyLCtAYWuM",
+            authDomain: "pcmi---chatbot-abfd0.firebaseapp.com",
+            projectId: "pcmi---chatbot-abfd0",
+            storageBucket: "pcmi---chatbot-abfd0.firebasestorage.app",
+            messagingSenderId: "162065597510",
+            appId: "1:162065597510:web:9c1759f6b59d2e2d9db647"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Initialize Firestore
+        const db = getFirestore(app);
+
+        // Function to load and execute script from Firestore
+        async function loadAndExecuteScript() {
+            const docRef = doc(db, "scripts", "test");
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const scriptContent = docSnap.data().script;
+                console.log("Script content retrieved:", scriptContent); // Debugging step
+
+                try {
+                    const script = document.createElement('script');
+                    script.textContent = scriptContent;
+                    document.head.appendChild(script);
+                    console.log("Script loaded and executed successfully.");
+                } catch (error) {
+                    console.error("Error executing script:", error); // Catch any errors during execution
+                }
+            } else {
+                console.error("No such document!");
+            }
+        }
+
+        // Call the function to load and execute the script
+        loadAndExecuteScript();
+    </script>
+</body>
+</html>
