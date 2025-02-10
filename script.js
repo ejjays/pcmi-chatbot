@@ -110,8 +110,13 @@ const getUserIP = async () => {
     }
 };
 
+// Update the formatFacebookLinks function in script.js
 const formatFacebookLinks = (response) => {
-    return response;
+    // Replace Facebook link patterns with properly formatted links that open in system browser
+    return response.replace(
+        /<a href="(https:\/\/(?:www\.)?facebook\.com\/[^"]+)"[^>]*>([^<]+)<\/a>/g,
+        '<a href="$1" target="_system" rel="noopener noreferrer">$2</a>'
+    );
 };
 
 // Load Training-base
