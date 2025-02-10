@@ -1116,14 +1116,47 @@ body.light_mode .expand-icon {
 }
 
 .answer-indicator {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .verified-badge {
-  display: inline-block;
-  height: 18px;
-  width: 18px;
-  vertical-align: middle;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+
+
+
+
+.offline-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff4444;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: none;
+  z-index: 1000;
+}
+
+.offline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.offline-container img {
+  width: 80%;
+  margin-bottom: 20px;
 }

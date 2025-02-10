@@ -11,6 +11,37 @@ let isResponseGenerating = false;
 let isDataLoaded = false;
 let displayedImages = new Set();
 
+// At the beginning of script.js
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful');
+      })
+      .catch(err => {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+  });
+}
+
+// Add offline support to existing Firebase functions
+const handleOfflineMode = () => {
+  window.addEventListener('online', () => {
+    console.log('Back online');
+    // Sync any stored offline messages
+    syncOfflineMessages();
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('Gone offline');
+    // Update UI to show offline state
+    showOfflineNotification();
+  });
+};
+
+// Call this function when app initializes
+handleOfflineMode();
+
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
