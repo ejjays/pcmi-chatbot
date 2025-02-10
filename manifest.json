@@ -6,6 +6,8 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4285f4",
+  "navigation_color": "#4285f4",
+  "navigation_bar_color": "#4285f4",
   "icons": [
     {
       "src": "images/pcmi-logo-192.png",
