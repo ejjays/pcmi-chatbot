@@ -64,26 +64,23 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Strategy
 self.addEventListener('fetch', (event) => {
+  // Check if request is for an image
+  if (event.request.destination === 'image') {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => response || fetch(event.request))
+        .catch(() => caches.match('/images/pcmi-logo.png'))
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch new
-        return response || fetch(event.request)
-          .then((response) => {
-            // Cache new responses for static assets
-            if (event.request.url.startsWith('http') && event.request.method === 'GET') {
-              const responseClone = response.clone();
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, responseClone);
-                });
-            }
-            return response;
-          });
-      })
+    fetch(event.request)
       .catch(() => {
-        // Offline fallback
-        return caches.match('/offline.html');
+        return caches.match(event.request)
+          .then(response => {
+            return response || caches.match('/offline.html');
+          });
       })
   );
 });
