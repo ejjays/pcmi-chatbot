@@ -4,15 +4,19 @@
   "description": "Pag-ibig Christian Ministries - Infanta Quezon Chatbot",
   "start_url": "/",
   "display": "fullscreen",
-  "background_color": "#ffffff",
-  "theme_color": "#4285f4",
-  "navigation_color": "#4285f4",
-  "navigation_bar_color": "#4285f4",
+  "background_color": "transparent",
+  "theme_color": "transparent",
+  "navigation_color": "transparent", 
+  "navigation_bar_color": "transparent",
   "icons": [
     {
       "src": "images/pcmi-ios.png",
       "sizes": "192x192 512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "splash_screen": {
+    "src": "images/splash-android.png",
+    "sizes": "1080x1920"
+  }
 }

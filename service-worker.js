@@ -7,6 +7,9 @@ const ASSETS_TO_CACHE = [
     '/manifest.json',
     '/offline.html',
     
+    // Android Splash Screen
+    '/images/splash-android.png',
+    
     // Images - Core UI
     '/images/pcmi-logo.png',
     '/images/pcmi-logo-192.png',
