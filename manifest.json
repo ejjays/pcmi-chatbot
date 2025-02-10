@@ -1,6 +1,6 @@
 {
   "name": "PCMI Chatbot",
-  "short_name": "PCMI Chat",
+  "short_name": "PCMI Chatbot",
   "description": "Pag-ibig Christian Ministries - Infanta Quezon Chatbot",
   "start_url": "/",
   "display": "fullscreen",
@@ -10,13 +10,8 @@
   "navigation_bar_color": "#4285f4",
   "icons": [
     {
-      "src": "images/pcmi-logo-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "images/pcmi-logo-512.png", 
-      "sizes": "512x512",
+      "src": "images/pcmi-logo.png",
+      "sizes": "192x192 512x512",
       "type": "image/png"
     }
   ]
