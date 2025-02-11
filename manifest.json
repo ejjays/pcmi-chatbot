@@ -12,11 +12,17 @@
     {
       "src": "images/pcmi-ios.png",
       "sizes": "192x192 512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "splash_screen": {
-    "src": "images/splash-android.png",
-    "sizes": "1080x1920"
-  }
+  "screenshots": [
+    {
+      "src": "images/splash-android.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Splash Screen"
+    }
+  ]
 }
