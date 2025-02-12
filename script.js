@@ -8,7 +8,7 @@ let userIsScrolling = false;
 let areFollowUpsHidden = false;
 let userMessage = null;
 let isResponseGenerating = false;
-let isDataLoaded = false;
+let isDataLoaded = false; 
 let displayedImages = new Set();
 
 // At the beginning of script.js
