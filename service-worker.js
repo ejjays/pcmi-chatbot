@@ -69,29 +69,50 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Modified fetch strategy to be cache-first
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
         if (cachedResponse) {
-          // Return cached response immediately
           return cachedResponse;
         }
-        // If not in cache, try network
+        
         return fetch(event.request)
           .then(response => {
-            // Cache the new response
-            return caches.open(CACHE_NAME)
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response as it can only be consumed once
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, response.clone());
-                return response;
+                cache.put(event.request, responseToCache);
               });
+
+            return response;
           })
           .catch(() => {
-            // If network fails, return offline page
-            return caches.match('offline.html');
+            // If the network request fails, return the offline page
+            return caches.match('/offline.html');
           });
+      })
+  );
+});
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('Opened cache');
+        // Pre-cache offline page
+        cache.add('/offline.html');
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
+      .then(() => {
+        return self.skipWaiting();
       })
   );
 });

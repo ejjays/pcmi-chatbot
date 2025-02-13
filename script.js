@@ -69,16 +69,22 @@ const updateInstallProgress = () => {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const registration = await navigator.serviceWorker.register('/service-worker.js');
+      const registration = await navigator.serviceWorker.register('/service-worker.js', {
+        scope: '/'
+      });
       
-      // Force immediate installation and activation
+      registration.addEventListener('activate', () => {
+        console.log('Service Worker activated');
+      });
+
+      // Force immediate activation
       if (registration.waiting) {
         registration.waiting.postMessage({ type: 'SKIP_WAITING' });
       }
       
       console.log('ServiceWorker registration successful');
     } catch (err) {
-      console.log('ServiceWorker registration failed: ', err);
+      console.error('ServiceWorker registration failed: ', err);
     }
   });
 }
