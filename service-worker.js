@@ -1,39 +1,38 @@
 const CACHE_NAME = 'pcmi-chatbot-v1';
 const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/script.js',
-    '/manifest.json',
-    '/offline.html',
+    './',
+    './index.html',
+    './styles.css',
+    './script.js',
+    './manifest.json',
+    './offline.html',
     
     // Android Splash Screen
-    '/images/splash-android.png',
+    './images/splash-android.png',
     
     // Images - Core UI
-    '/images/pcmi-logo.png',
-    '/images/pcmi-logo-192.png',
-    '/images/pcmi-logo-512.png',
+    './images/pcmi-logo.png',
+    './images/pcmi-logo-192.png',
+    './images/pcmi-logo-512.png',
     
     // Avatar Images
-    '/images/avatars/pcmi-bot.png',
-    '/images/avatars/thinking.gif',
-    '/images/avatars/verified-badge.svg',
+    './images/avatars/pcmi-bot.png',
+    './images/avatars/thinking.gif',
+    './images/avatars/verified-badge.svg',
     
     // Service Images
-    '/images/services/church-location.png',
-    '/images/services/youth-fellowship.jpg',
-    '/images/services/cellgroup.jpg',
-    '/images/services/sunday-service.gif',
-    '/images/services/discipleship.jpg',
-    '/images/services/prayer-warrior.jpg',
+    './images/services/church-location.png',
+    './images/services/youth-fellowship.jpg',
+    './images/services/cellgroup.jpg',
+    './images/services/sunday-service.gif',
+    './images/services/discipleship.jpg',
+    './images/prayer-warrior.jpg',
     
     // Suggestion Icons
-    '/images/suggestions/clock.gif',
-    '/images/suggestions/location.gif',
-    '/images/suggestions/connect.gif',
-    '/images/suggestions/fellowship.gif',
-    
+    './images/suggestions/clock.gif',
+    './images/suggestions/location.gif',
+    './images/suggestions/connect.gif',
+    './images/suggestions/fellowship.gif',
     // External Resources
     'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0',
     
@@ -96,7 +95,7 @@ self.addEventListener('fetch', (event) => {
           })
           .catch(() => {
             // If the network request fails, return the offline page
-            return caches.match('/offline.html');
+            return caches.match('./offline.html');
           });
       })
   );
@@ -107,12 +106,15 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        // Pre-cache offline page
-        cache.add('/offline.html');
-        return cache.addAll(ASSETS_TO_CACHE);
+        // Cache files individually to handle failures
+        return Promise.allSettled(
+          ASSETS_TO_CACHE.map(url => 
+            cache.add(url).catch(err => {
+              console.warn(`Failed to cache ${url}:`, err);
+            })
+          )
+        );
       })
-      .then(() => {
-        return self.skipWaiting();
-      })
+      .then(() => self.skipWaiting())
   );
 });
