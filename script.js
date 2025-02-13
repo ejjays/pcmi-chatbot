@@ -12,6 +12,49 @@ let isDataLoaded = false;
 let displayedImages = new Set();
 let assetsLoaded = 0;
 
+document.addEventListener('DOMContentLoaded', () => {
+  const progressBar = document.getElementById('install-progress');
+  if (progressBar) {
+    if (!localStorage.getItem('app-installed')) {
+      progressBar.style.display = 'block';
+      
+      // Hide progress once installation is complete
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          progressBar.style.display = 'none';
+          localStorage.setItem('app-installed', 'true');
+        }, 1000);
+      });
+    }
+  }
+});
+
+const ASSETS_TO_CACHE = [
+    '/',
+    '/index.html',
+    '/styles.css',
+    '/script.js',
+    '/manifest.json',
+    '/offline.html',
+    '/images/splash-android.png',
+    '/images/pcmi-logo.png',
+    '/images/pcmi-logo-192.png',
+    '/images/pcmi-logo-512.png',
+    '/images/avatars/pcmi-bot.png',
+    '/images/avatars/thinking.gif',
+    '/images/avatars/verified-badge.svg',
+    '/images/services/church-location.png',
+    '/images/services/youth-fellowship.jpg',
+    '/images/services/cellgroup.jpg',
+    '/images/services/sunday-service.gif',
+    '/images/services/discipleship.jpg',
+    '/images/services/prayer-warrior.jpg',
+    '/images/suggestions/clock.gif',
+    '/images/suggestions/location.gif',
+    '/images/suggestions/connect.gif',
+    '/images/suggestions/fellowship.gif'
+];
+
 const totalAssets = ASSETS_TO_CACHE.length;
 
 const updateInstallProgress = () => {
@@ -22,18 +65,6 @@ const updateInstallProgress = () => {
     progressBar.value = progress;
   }
 };
-
-if (!localStorage.getItem('app-installed')) {
-  document.getElementById('install-progress').style.display = 'block';
-  
-  // Hide progress once installation is complete
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('install-progress').style.display = 'none';
-      localStorage.setItem('app-installed', 'true');
-    }, 1000);
-  });
-}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
