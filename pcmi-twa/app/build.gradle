@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace "com.pcmi.chatbot"  // Add this line
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.pcmi.chatbot"
