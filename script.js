@@ -14,11 +14,10 @@ let assetsLoaded = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
   const progressBar = document.getElementById('install-progress');
-  if (progressBar) {
+  if (progressBar) {  // Only add listener if element exists
     if (!localStorage.getItem('app-installed')) {
       progressBar.style.display = 'block';
       
-      // Hide progress once installation is complete
       window.addEventListener('load', () => {
         setTimeout(() => {
           progressBar.style.display = 'none';
@@ -30,29 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './styles.css',
-    './script.js',
-    './manifest.json',
-    './offline.html',
-    './images/splash-android.png',
-    './images/pcmi-logo.png',
-    './images/pcmi-logo-192.png',
-    './images/pcmi-logo-512.png',
-    './images/avatars/pcmi-bot.png',
-    './images/avatars/thinking.gif',
-    './images/avatars/verified-badge.svg',
-    './images/services/church-location.png',
-    './images/services/youth-fellowship.jpg',
-    './images/services/cellgroup.jpg',
-    './images/services/sunday-service.gif',
-    './images/services/discipleship.jpg',
-    './images/services/prayer-warrior.jpg',
-    './images/suggestions/clock.gif',
-    './images/suggestions/location.gif',
-    './images/suggestions/connect.gif',
-    './images/suggestions/fellowship.gif'
+    '/',
+    'index.html',
+    'styles.css',
+    'script.js',
+    'manifest.json',
+    'offline.html',
+    'images/splash-android.png',
+    'images/pcmi-logo.png',
+    'images/pcmi-logo-192.png',
+    'images/pcmi-logo-512.png',
+    'images/avatars/pcmi-bot.png',
+    'images/avatars/thinking.gif',
+    'images/avatars/verified-badge.svg',
+    'images/services/church-location.png',
+    'images/services/youth-fellowship.jpg',
+    'images/services/cellgroup.jpg',
+    'images/services/sunday-service.gif',
+    'images/services/discipleship.jpg',
+    'images/prayer-warrior.jpg',
+    'images/suggestions/clock.gif',
+    'images/suggestions/location.gif',
+    'images/suggestions/connect.gif',
+    'images/suggestions/fellowship.gif'
 ];
 
 const totalAssets = ASSETS_TO_CACHE.length;
