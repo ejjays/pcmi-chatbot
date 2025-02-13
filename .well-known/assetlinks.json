@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.pcmi.chatbot",
+    "sha256_cert_fingerprints": ["48:4D:E5:5E:51:E5:11:69:79:63:7D:8D:DE:30:0F:8E:2A:24:4E:8B:5E:AB:C2:5D:E0:26:CB:D4:F2:6E:55:05"]
+  }
+}]
