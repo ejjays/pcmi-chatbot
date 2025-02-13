@@ -10,17 +10,45 @@ let userMessage = null;
 let isResponseGenerating = false;
 let isDataLoaded = false; 
 let displayedImages = new Set();
+let assetsLoaded = 0;
 
-// At the beginning of script.js
-if ('serviceWorker' in navigator) {
+const totalAssets = ASSETS_TO_CACHE.length;
+
+const updateInstallProgress = () => {
+  assetsLoaded++;
+  const progress = (assetsLoaded / totalAssets) * 100;
+  const progressBar = document.getElementById('install-progress-bar');
+  if (progressBar) {
+    progressBar.value = progress;
+  }
+};
+
+if (!localStorage.getItem('app-installed')) {
+  document.getElementById('install-progress').style.display = 'block';
+  
+  // Hide progress once installation is complete
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(err => {
-        console.log('ServiceWorker registration failed: ', err);
-      });
+    setTimeout(() => {
+      document.getElementById('install-progress').style.display = 'none';
+      localStorage.setItem('app-installed', 'true');
+    }, 1000);
+  });
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
+      
+      // Force immediate installation and activation
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+      
+      console.log('ServiceWorker registration successful');
+    } catch (err) {
+      console.log('ServiceWorker registration failed: ', err);
+    }
   });
 }
 

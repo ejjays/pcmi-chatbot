@@ -42,11 +42,15 @@ const ASSETS_TO_CACHE = [
     'https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js'
 ];
 
-// Install Service Worker
+// Install Service Worker - Force waiting until all assets are cached
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Forces the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+      .then((cache) => {
+        console.log('Caching all assets');
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
   );
 });
 
@@ -65,24 +69,28 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Strategy
+// Modified fetch strategy to be cache-first
 self.addEventListener('fetch', (event) => {
-  // Check if request is for an image
-  if (event.request.destination === 'image') {
-    event.respondWith(
-      caches.match(event.request)
-        .then(response => response || fetch(event.request))
-        .catch(() => caches.match('/images/pcmi-logo.png'))
-    );
-    return;
-  }
-
   event.respondWith(
-    fetch(event.request)
-      .catch(() => {
-        return caches.match(event.request)
+    caches.match(event.request)
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          // Return cached response immediately
+          return cachedResponse;
+        }
+        // If not in cache, try network
+        return fetch(event.request)
           .then(response => {
-            return response || caches.match('offline.html');
+            // Cache the new response
+            return caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, response.clone());
+                return response;
+              });
+          })
+          .catch(() => {
+            // If network fails, return offline page
+            return caches.match('offline.html');
           });
       })
   );

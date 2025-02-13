@@ -8,6 +8,8 @@
   "theme_color": "#3d696e",
   "orientation": "portrait",
   "categories": ["social", "utilities"],
+  "offline_enabled": true,
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "images/pcmi-ios.png",
