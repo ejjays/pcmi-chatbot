@@ -1,1 +1,1 @@
-echo 'include ":app"' > settings.gradle
+include ":app"
