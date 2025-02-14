@@ -5,7 +5,7 @@
   "start_url": "/",
   "display": "fullscreen",
   "background_color": "#FFFFFF",
-  "theme_color": "#3d696e",
+  "theme_color": "#FFFFFF",
   "orientation": "portrait",
   "categories": ["social", "utilities"],
   "offline_enabled": true,
