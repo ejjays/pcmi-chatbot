@@ -3,7 +3,7 @@
   "short_name": "PCMI Chatbot",
   "description": "Pag-ibig Christian Ministries - Infanta Quezon Chatbot",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#FFFFFF",
   "theme_color": "#3d696e",
   "orientation": "portrait",
