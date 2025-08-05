@@ -265,7 +265,7 @@ const toggleThemeButton = document.querySelector("#theme-toggle-button");
 const deleteChatButton = document.querySelector("#delete-chat-button");
 
 // API configuration
-const API_KEY = "AIzaSyC0N559LhkMH1GqrvF1Pg7cpkMmaHMZgZg"; // API key 
+const API_KEY = "AIzaSyCKLq5cgVUwYqqJFHmQfK9vyWNtdmYeylA"; // API key 
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
 // Load theme and chat data from local storage on page load
